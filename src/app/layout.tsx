@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Newsreader, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import Cabecalho from "@/components/layout/Cabecalho";
+import Rodape from "@/components/layout/Rodape";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <Cabecalho />
         {children}
+        <Rodape />
       </body>
     </html>
   );
