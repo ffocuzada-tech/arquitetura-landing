@@ -4,13 +4,13 @@
 > Histórico → PRs no GitHub. Decisões → docs/decisoes.md.
 
 ## 1. Onde estamos
-Etapa: PR 1 – Estrutura | Status: em andamento (prompt 1B)
+Etapa: PR 1 – Estrutura | Status: aguardando revisão
 
 ## 2. Última entrega
-Projeto Next.js 16.4.3 criado e enviado para a `main` (commit "Initial commit from Create Next App"), exceção D24. Repositório conectado à Vercel.
+Prompt 1C concluído na branch `etapa/1-estrutura`: assets copiados, skills de design e testes instaladas (D27–D32), fontes/cores/metadados e componentes base (Container, Secao, Rotulo), `src/lib/contato.ts`, cabeçalho, rodapé, página da política de privacidade e a página inicial com as 7 seções vazias e as âncoras. PR aberto para revisão.
 
 ## 3. Próximo passo
-Prompt 1B, na branch `etapa/1-estrutura`: commit dos docs e leitura das 3 skills (sem instalar). Depois, prompt 1C: estrutura completa e abertura do PR 1.
+PR 2 – Seções principais, na branch `etapa/2-secoes-principais`: Hero, Manifesto, Projetos, Por que nós e Processo, com os efeitos (GSAP + ScrollTrigger).
 
 ## 4. Pendências abertas
 - Número de WhatsApp do projeto (espaço reservado até lá).
@@ -18,9 +18,9 @@ Prompt 1B, na branch `etapa/1-estrutura`: commit dos docs e leitura das 3 skills
 - Avaliação final da miniatura no teste do site.
 
 ## 5. Atenção
-- Os assets ficam em `C:\projetos\assets-estudio-vazio` e são copiados pelo usuário antes do prompt 1C (ver `docs/spec.md`, parte 8).
 - Paleta, fontes, layout e textos já estão aprovados: não trocar (ver `docs/regras.md`, Parte 2).
 - Next.js 16: consultar `node_modules/next/dist/docs/` antes de escrever código (ver `AGENTS.md`).
+- Skills instaladas como pastas reais em `.claude/skills/` (frontend-design, webapp-testing, ui-ux-pro-max), sem `.agents/`, sem links e sem `skills-lock.json` (D31, D32).
 
 ## 6. Verificado em
-29/10/2026 — `npm run build` sem erros na `main` (relatado no prompt 1A)
+29/10/2026 — `npm run lint` e `npm run build` sem erros na `etapa/1-estrutura`. Testado com a skill webapp-testing em 390px (celular) e 1440px (computador): os 3 links do menu levam às seções certas, o cabeçalho muda ao rolar sem cobrir o rótulo das seções, o botão abre o wa.me com a mensagem certa, sem erros no console, favicon do Estúdio Vazio na aba, navegação por Tab com foco visível.

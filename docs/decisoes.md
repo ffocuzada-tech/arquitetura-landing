@@ -32,3 +32,9 @@
 | D24 | 29/10/2026 | Exceção à regra G1: só o projeto recém-criado pelo `create-next-app` (Next.js 16.4.3), sem alterações, foi direto para a `main` | O PR 1 mostra só o trabalho real e a Vercel já sobe com um site funcionando |
 | D25 | 29/10/2026 | PR 1 dividido em 3 prompts (1A projeto · 1B docs e leitura das skills · 1C estrutura e PR) | Paradas obrigatórias: conexão da Vercel e leitura das skills (S5) |
 | D26 | 29/10/2026 | `AGENTS.md` criado pelo Next.js é mantido e citado no `CLAUDE.md` (item 5) | O Next.js 16 é mais novo que o conhecimento do Claude Code; a documentação instalada evita código desatualizado |
+| D27 | 29/10/2026 | frontend-design e webapp-testing instaladas pelo `npx skills add` | Lidas antes (S5); a primeira é só texto, a segunda roda só comandos locais |
+| D28 | 29/10/2026 | UI/UX Pro Max pelo `npx ui-ux-pro-max-cli init --ai claude`, dentro do repositório, sem token e sem usar o gerador de design system (substitui o `uipro-cli` da Base) | O `uipro-cli` está desatualizado; paleta e fontes já aprovadas |
+| D29 | 29/10/2026 | Coleta de dados de uso do pacote `skills` desligada; `.claude/settings.local.json` fora do GitHub | Projeto sem rastreamento; configuração pessoal não vai para o repositório |
+| D30 | 29/10/2026 | Site sem modo escuro automático | Cada seção tem o fundo definido na identidade aprovada |
+| D31 | 29/10/2026 | Skills como pastas reais só em `.claude/skills/`, sem `.agents/`, sem links e sem `skills-lock.json` | Atalhos não funcionam bem no Git do Windows; as skills são só para o Claude Code |
+| D32 | 29/10/2026 | Das 7 skills instaladas pelo `ui-ux-pro-max-cli`, fica só a `ui-ux-pro-max`; as 6 extras (banner-design, brand, design, design-system, slides, ui-styling) foram removidas | O Claude Code escolhe skills pela descrição; skills de marca e design system poderiam propor mudanças na identidade já aprovada |
