@@ -20,7 +20,10 @@ export default function Secao({ id, fundo, rotulo, children, className = "" }: S
   const estilo = estilosPorFundo[fundo];
 
   return (
-    <section id={id} className={`${estilo.fundo} ${estilo.texto} py-20 md:py-32 ${className}`}>
+    <section
+      id={id}
+      className={`${estilo.fundo} ${estilo.texto} scroll-mt-24 py-20 md:py-32 ${className}`}
+    >
       <Container>
         {rotulo && <Rotulo className={`mb-6 block ${estilo.rotulo}`}>{rotulo}</Rotulo>}
         {children}

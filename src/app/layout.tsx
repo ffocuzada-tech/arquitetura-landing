@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Newsreader, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import Cabecalho from "@/components/layout/Cabecalho";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -45,7 +46,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${newsreader.variable} ${hankenGrotesk.variable} ${ibmPlexMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <Cabecalho />
+        {children}
+      </body>
     </html>
   );
 }
