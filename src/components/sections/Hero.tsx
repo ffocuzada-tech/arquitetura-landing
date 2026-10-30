@@ -92,7 +92,7 @@ export default function Hero() {
       )}
 
       <div className="absolute inset-0 hidden bg-gradient-to-r from-nevoa via-nevoa/35 to-transparent md:block" />
-      <div className="absolute inset-x-0 bottom-0 hidden h-1/3 bg-gradient-to-t from-carvao/50 to-transparent md:block" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-carvao/50 to-transparent" />
       <div className="absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-nevoa via-nevoa/55 to-transparent md:hidden" />
 
       <Container className="relative z-10 flex w-full flex-col self-stretch py-28 md:justify-center md:py-0">
@@ -123,13 +123,13 @@ export default function Hero() {
           </a>
           <a
             href="#projetos"
-            className="font-texto text-sm font-medium text-carvao underline-offset-4 hover:underline"
+            className="font-texto text-sm font-medium text-nevoa underline-offset-4 hover:underline md:text-carvao"
           >
             Ver projetos →
           </a>
         </div>
 
-        <div className="mt-4 font-rotulo text-xs uppercase tracking-wide text-carvao md:mt-0 md:absolute md:bottom-10 md:left-12">
+        <div className="mt-4 font-rotulo text-xs uppercase tracking-wide text-nevoa md:mt-0 md:absolute md:bottom-10 md:left-12 md:text-carvao">
           Role para conhecer
         </div>
       </Container>

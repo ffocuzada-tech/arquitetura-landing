@@ -41,3 +41,4 @@
 | D33 | 29/10/2026 | PR 2 feito em um prompt só (seções e efeitos juntos), em vez dos 2 prompts aprovados | Após uma falha de conexão, o Claude Code retomou pelo handoff e executou tudo de uma vez; o resultado foi revisado e aceito |
 | D34 | 29/10/2026 | GSAP só pelo pacote `gsap` (ScrollTrigger e SplitText incluídos); limpeza das animações com `gsap.matchMedia()` e `revert()` no `useEffect`, sem `@gsap/react` | Mesmo resultado com um pacote a menos; o `matchMedia` também cuida do reduced motion |
 | D35 | 29/10/2026 | Ícones do "Por que nós" desenhados em SVG próprio, sem biblioteca | Traço fino no estilo do logo |
+| D36 | 29/10/2026 | No celular, escurecimento no pé do vídeo do hero e "Ver projetos →" / "Role para conhecer" em Névoa | Legibilidade sobre a parte escura da foto (Q2) |
