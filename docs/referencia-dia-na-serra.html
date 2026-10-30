@@ -1,0 +1,1113 @@
+<title>Estúdio Vazio – Um dia na serra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap">
+<style>
+/* A página é um dia na serra: o céu (fundo fixo) muda da névoa da manhã ao crepúsculo com a rolagem.
+   Sem faixas: as seções se dissolvem umas nas outras. Momentos fixos: manifesto, janela, casas de lado, a casa se construindo.
+   Site sem modo escuro (D30): uma aparência só, cores explícitas. */
+:root{
+  --nevoa:#F4EEE6; --linho:#E8DED0; --tarde:#EAD6BC; --carvao:#211A12; --terra:#5C5244; --madeira:#87582B;
+  --araucaria:#3E4A32; --pedra:#9A9493; --ambar:#F0AA60; --ambar-escuro:#E0954A; --crepusculo:#1C1724;
+  --titulo:"Newsreader",Georgia,"Times New Roman",serif;
+  --texto:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --rotulo:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --lado:max(20px,env(safe-area-inset-left,0px));
+  --lado-d:max(20px,env(safe-area-inset-right,0px));
+  color-scheme:light;
+}
+@media (min-width:768px){:root{--lado:max(48px,env(safe-area-inset-left,0px));--lado-d:max(48px,env(safe-area-inset-right,0px))}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--nevoa);color:var(--carvao);font-family:var(--texto);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:90;background:var(--nevoa)}
+main,footer{overflow-x:clip}
+img,video{max-width:100%;display:block}
+h1,h2,h3,p,blockquote,figure{margin:0}
+h1,h2,h3{font-family:var(--titulo);font-weight:300;text-wrap:balance}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ambar);outline-offset:3px}
+.faixa{padding-left:var(--lado);padding-right:var(--lado-d)}
+.caixa{max-width:1280px;margin:0 auto}
+.rot{font-family:var(--rotulo);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* céu fixo + grão */
+.ceu{position:fixed;inset:0;z-index:-2;background:var(--nevoa)}
+.grao{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .13 0 0 0 0 .1 0 0 0 0 .07 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- cabeçalho ---------- */
+.cab{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:70;transition:background .5s,box-shadow .5s,padding .5s}
+.cab .caixa{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px;transition:padding .5s}
+.cab.solido{background:rgba(244,238,230,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(154,148,147,.25)}
+.cab.solido .caixa{padding-block:14px}
+.cab.escuro{background:rgba(28,23,36,.82);box-shadow:0 1px 0 rgba(244,238,230,.08)}
+.marca{display:block;position:relative;height:28px}
+@media (min-width:768px){.marca{height:32px}}
+.marca img{height:100%;width:auto;transition:opacity .4s}
+.marca .claro{position:absolute;inset:0;opacity:0}
+.cab.escuro .marca .esc{opacity:0}.cab.escuro .marca .claro{opacity:1}
+.cab nav{display:none;gap:36px}
+@media (min-width:900px){.cab nav{display:flex}}
+.cab nav a{font-family:var(--rotulo);font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--carvao);position:relative;padding-block:6px;transition:color .4s}
+.cab nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.cab nav a:hover::after{transform:scaleX(1);transform-origin:left}
+.cab.escuro nav a{color:var(--nevoa)}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:12px 22px;font:500 14px/1 var(--texto);text-decoration:none;white-space:nowrap;border:0;cursor:pointer;transition:background .3s,color .3s,transform .3s}
+.btn-esc{background:var(--carvao);color:var(--nevoa)}
+.cab.escuro .btn-esc{background:var(--ambar);color:var(--carvao)}
+.btn-ambar{background:var(--ambar);color:var(--carvao)}
+.btn-ambar:hover{background:var(--ambar-escuro)}
+.btn .curto{display:inline}.btn .longo{display:none}
+@media (min-width:768px){.btn .curto{display:none}.btn .longo{display:inline}}
+.btn-seta{width:22px;height:22px;border-radius:50%;background:rgba(33,26,18,.12);display:grid;place-items:center;transition:transform .4s}
+.btn:hover .btn-seta{transform:translateX(3px) rotate(-45deg)}
+
+/* ================= HERO ================= */
+.hero{position:relative;height:100svh;min-height:600px;overflow:hidden;color:var(--carvao)}
+.hero-midia{position:absolute;inset:0;transform-origin:70% 60%}
+.hero-midia video,.hero-midia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:74% 50%}
+@media (min-width:900px){.hero-midia video,.hero-midia img{object-position:60% 50%}}
+.hero-veu{position:absolute;inset:0;background:linear-gradient(180deg,rgba(244,238,230,.9) 0%,rgba(244,238,230,.55) 34%,rgba(244,238,230,0) 58%)}
+@media (min-width:900px){.hero-veu{background:linear-gradient(90deg,rgba(244,238,230,.92) 0%,rgba(244,238,230,.6) 34%,rgba(244,238,230,0) 62%)}}
+.hero-bruma{position:absolute;left:0;right:0;bottom:-1px;height:34vh;background:linear-gradient(180deg,rgba(244,238,230,0),rgba(244,238,230,.75) 60%,var(--nevoa))}
+.hero-cont{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding-top:120px;padding-bottom:40px}
+@media (min-width:900px){.hero-cont{justify-content:center;padding-bottom:0}}
+.hero h1{font-size:clamp(44px,7.4vw,112px);line-height:.98;letter-spacing:-.015em;max-width:11ch}
+.hero h1 em{font-style:italic}
+.pm{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.pi{display:inline-block}
+.hero-sub{margin-top:28px;font-size:17px;max-width:38ch;color:var(--carvao)}
+@media (min-width:900px){.hero-sub{font-size:19px}}
+.hero-acoes{display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;margin-top:36px}
+.link-seta{font-weight:500;font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+.hero-pe{position:absolute;z-index:2;left:var(--lado);bottom:32px;display:none;align-items:center;gap:12px}
+@media (min-width:900px){.hero-pe{display:flex}}
+.hero-pe i{display:block;width:1px;height:40px;background:var(--carvao);transform-origin:top;animation:pulso 2.4s ease-in-out infinite}
+@keyframes pulso{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ================= 01 MANIFESTO ================= */
+.mani-texto{padding-block:120px 80px}
+.pino .mani-texto{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-block:96px 48px}
+.mani-topo{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 28px}
+.mani-topo h2{font-size:clamp(20px,2vw,26px);font-weight:400;font-style:italic;color:var(--madeira)}
+.mani-grande{margin-top:32px;font-family:var(--titulo);font-weight:300;font-size:clamp(25px,min(3.05vw,4.9vh),46px);line-height:1.28;letter-spacing:-.005em;max-width:30em;display:grid;gap:.7em}
+.pal{display:inline}
+.mani-grande em{font-style:italic}
+
+/* janela que se abre */
+.expande{position:relative;height:100svh;min-height:560px}
+.expande-img{position:absolute;inset:0;overflow:hidden}
+.expande-img img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.expande-veu{position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,23,36,0) 45%,rgba(28,23,36,.72));pointer-events:none}
+.exp-p{display:none;position:absolute;top:50%;transform:translateY(-50%);font-family:var(--titulo);font-style:italic;font-weight:300;font-size:clamp(40px,5.2vw,84px);line-height:1;color:var(--carvao);white-space:nowrap}
+.pino .exp-p{display:block}
+.exp-l{right:calc(63% + 2.4vw)} .exp-r{left:calc(63% + 2.4vw)}
+.expande-nums{position:absolute;left:0;right:0;bottom:0;padding-bottom:40px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;color:var(--nevoa)}
+@media (min-width:900px){.expande-nums{padding-bottom:56px}}
+.en{display:grid;gap:8px;align-content:end;min-width:0}
+.en i{display:block;width:28px;height:2px;border-radius:2px;background:var(--ambar)}
+.en b{font-family:var(--titulo);font-weight:300;font-size:clamp(34px,5vw,76px);line-height:1;font-variant-numeric:tabular-nums}
+.en b small{font-size:.45em;margin-left:.15em;font-style:italic}
+.en span{font-size:13px;line-height:1.4;color:rgba(244,238,230,.82)}
+@media (min-width:768px){.en span{font-size:15px}}
+
+/* ================= 02 PROJETOS ================= */
+.proj{position:relative;padding-block:120px 40px}
+.pino .proj{height:100svh;padding:0;display:flex;align-items:center;overflow:hidden}
+.proj-trilho{display:grid;gap:72px}
+.pino .proj-trilho{display:flex;gap:5vw;align-items:stretch;padding-left:var(--lado);padding-right:10vw;width:max-content;will-change:transform}
+.proj-intro{display:grid;align-content:center;gap:28px}
+.faixa-mob{padding-left:var(--lado);padding-right:var(--lado-d)}
+.pino .faixa-mob{padding-left:0;padding-right:0}
+html:not(.pino) .casa,html:not(.pino) .proj-intro{max-width:1376px;margin-inline:auto;width:100%}
+.pino .proj-intro{width:min(36vw,520px)}
+.proj-intro h2{font-size:clamp(44px,5.8vw,96px);line-height:.98;letter-spacing:-.015em}
+.proj-intro h2 em{font-style:italic;color:var(--madeira)}
+.dica{display:none;align-items:center;gap:12px}
+.pino .dica{display:flex}
+.dica i{display:block;width:48px;height:1px;background:var(--terra);transform-origin:left;animation:dica 2.2s ease-in-out infinite}
+@keyframes dica{0%{transform:scaleX(.2)}50%{transform:scaleX(1)}100%{transform:scaleX(.2)}}
+.casa{display:grid;gap:20px;min-width:0}
+.pino .casa{width:min(62vw,1100px);grid-template-rows:1fr auto;height:calc(100svh - 190px);margin-top:70px;align-self:center}
+.casa-foto{position:relative;overflow:hidden;border-radius:24px;aspect-ratio:4/5;max-width:100%;background:var(--crepusculo)}
+@media (min-width:600px){.casa-foto{aspect-ratio:4/3}}
+.pino .casa-foto{aspect-ratio:auto;height:100%;min-height:0}
+.casa-foto img{position:absolute;top:0;left:-8%;width:116%;max-width:none;height:100%;object-fit:cover}
+.casa-foto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,23,36,0) 50%,rgba(28,23,36,.62));pointer-events:none}
+.casa-nome{position:absolute;z-index:1;left:24px;right:24px;bottom:22px;color:var(--nevoa)}
+@media (min-width:900px){.casa-nome{left:36px;bottom:30px}}
+.casa-nome h3{font-size:clamp(38px,5.6vw,100px);line-height:.95;letter-spacing:-.015em}
+.casa-nome h3 em{font-style:italic}
+.casa-nome span{display:block;margin-top:12px;font-family:var(--rotulo);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(244,238,230,.85)}
+.casa-info{display:grid;gap:14px}
+@media (min-width:900px){.casa-info{grid-template-columns:auto 1fr;gap:12px 40px;align-items:start}}
+.casa-area{font-family:var(--titulo);font-weight:300;font-size:44px;line-height:1;color:var(--madeira);font-variant-numeric:tabular-nums}
+.casa-area small{font-size:.5em;margin-left:.1em}
+.casa-info p{font-size:16px;color:var(--terra);max-width:58ch}
+.etq{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:10px 0 0;padding:0}
+.etq li{font-family:var(--rotulo);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--araucaria);border:1px solid rgba(62,74,50,.35);border-radius:999px;padding:5px 11px}
+.proj-barra{display:none}
+.pino .proj-barra{display:flex;position:absolute;left:var(--lado);right:var(--lado-d);bottom:28px;align-items:center;gap:20px}
+.proj-barra .linha{flex:1;height:1px;background:rgba(92,82,68,.25);position:relative}
+.proj-barra .linha i{position:absolute;inset:0;background:var(--carvao);transform-origin:left;transform:scaleX(0)}
+.proj-cont{font-family:var(--rotulo);font-size:12px;letter-spacing:.1em;color:var(--carvao);font-variant-numeric:tabular-nums}
+
+/* ================= 03 POR QUE NÓS ================= */
+.pq{padding-block:140px 120px}
+.pq-topo{display:grid;gap:24px}
+@media (min-width:900px){.pq-topo{grid-template-columns:7fr 4fr;align-items:end;gap:64px}}
+.pq-topo h2{font-size:clamp(34px,4.4vw,68px);line-height:1.04;letter-spacing:-.01em}
+.pq-topo h2 em{font-style:italic;color:var(--madeira)}
+.pq-topo p{color:var(--terra);font-size:17px;max-width:34ch}
+.pq-lista{list-style:none;margin:72px 0 0;padding:0}
+.pq-item{position:relative;padding-block:36px;display:grid;gap:18px;cursor:default}
+@media (min-width:900px){.pq-item{grid-template-columns:7fr 4fr;gap:64px;align-items:center;padding-block:48px}}
+.pq-item::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(92,82,68,.35);transform-origin:left}
+.pq-lista::after{content:"";display:block;height:1px;background:rgba(92,82,68,.35)}
+.pq-item .tag{font-family:var(--rotulo);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--madeira)}
+.pq-t{overflow:hidden}
+.pq-item h3{font-size:clamp(30px,3.9vw,60px);line-height:1.04;letter-spacing:-.01em;transition:transform .7s cubic-bezier(.22,.61,.36,1),color .5s}
+.pq-item p{font-size:16px;color:var(--terra);max-width:40ch;transition:color .5s}
+.pq-img{border-radius:18px;overflow:hidden;aspect-ratio:5/3;max-width:100%}
+.pq-img img{width:100%;height:100%;object-fit:cover}
+@media (min-width:900px){.pq-img{display:none}}
+@media (hover:hover) and (min-width:900px){
+  .pq-item:hover h3{transform:translateX(28px);color:var(--madeira)}
+  .pq-item:hover p{color:var(--carvao)}
+}
+.flutua{position:fixed;left:0;top:0;width:320px;aspect-ratio:5/3;border-radius:18px;overflow:hidden;pointer-events:none;z-index:40;opacity:0;visibility:hidden;box-shadow:0 30px 60px -30px rgba(33,26,18,.6)}
+.flutua img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
+.flutua img.on{opacity:1}
+
+/* ================= 04 PROCESSO ================= */
+.proc{padding-block:120px}
+.pino .proc{height:100svh;padding-block:96px 32px;display:grid;grid-template-rows:auto 1fr auto;gap:28px}
+.proc-topo{display:grid;gap:16px}
+@media (min-width:900px){.proc-topo{grid-template-columns:auto 1fr;align-items:end;gap:40px}}
+.proc-topo h2{font-size:clamp(32px,3.6vw,56px);line-height:1.05;letter-spacing:-.01em}
+.proc-topo h2 em{font-style:italic;color:var(--madeira)}
+.proc-topo p{color:var(--terra);font-size:16px;justify-self:end;max-width:30ch}
+.proc-etapas{list-style:none;margin:56px 0 0;padding:0;display:grid;gap:56px}
+.pino .proc-etapas{margin:0;position:relative;min-height:0}
+.etapa{display:grid;gap:22px;min-width:0}
+@media (min-width:900px){.etapa{grid-template-columns:4fr 7fr;gap:56px;align-items:center}}
+.pino .etapa{position:absolute;inset:0;grid-template-columns:4fr 7fr;gap:56px;align-items:stretch}
+.etapa-txt{display:grid;gap:12px;align-content:center}
+.etapa-n{font-family:var(--titulo);font-weight:300;font-size:clamp(64px,10vw,168px);line-height:.85;color:var(--madeira);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.etapa-txt h3{font-size:clamp(26px,2.6vw,40px);font-weight:400;line-height:1.1}
+.etapa-txt p{font-size:16px;color:var(--terra);max-width:34ch}
+.etapa-fig{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;aspect-ratio:4/3;max-width:100%;background:var(--nevoa);box-shadow:0 30px 60px -40px rgba(33,26,18,.45)}
+.pino .etapa-fig{aspect-ratio:auto;height:100%}
+.etapa-fig img,.etapa-fig svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.etapa-fig .chip{position:absolute;left:16px;top:16px;z-index:1;font-family:var(--rotulo);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:rgba(244,238,230,.9);color:var(--carvao);border-radius:999px;padding:7px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.proc-marcas{display:none}
+.pino .proc-marcas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;list-style:none;margin:0;padding:0}
+.proc-marcas li{display:grid;gap:10px;font-family:var(--rotulo);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--pedra);transition:color .4s}
+.proc-marcas li i{display:block;height:2px;border-radius:2px;background:rgba(92,82,68,.2);overflow:hidden;position:relative}
+.proc-marcas li i::after{content:"";position:absolute;inset:0;background:var(--madeira);transform:scaleX(var(--f,0));transform-origin:left}
+.proc-marcas li.on{color:var(--carvao)}
+
+/* ================= 05 DEPOIMENTOS ================= */
+.dep{position:relative;padding-block:200px 140px;color:var(--nevoa)}
+.bruma{position:absolute;--b:0;left:-10%;right:-10%;top:-120px;height:320px;pointer-events:none;filter:blur(30px);opacity:.55}
+.bruma span{position:absolute;border-radius:50%;background:rgba(244,238,230,.5)}
+.dep .rot{color:var(--ambar)}
+.dep-topo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:20px 40px}
+.dep-topo h2{font-size:clamp(34px,4.4vw,68px);line-height:1.04;color:var(--nevoa)}
+.dep-topo p{color:rgba(244,238,230,.7);font-size:17px}
+.dep-palco{margin-top:72px;display:grid;gap:40px}
+@media (min-width:900px){.dep-palco{grid-template-columns:3fr 9fr;gap:64px;align-items:start}}
+.dep-aspas{font-family:var(--titulo);font-size:140px;line-height:.6;color:var(--ambar);height:60px}
+.dep-q{font-family:var(--titulo);font-style:italic;font-weight:300;font-size:clamp(26px,3.3vw,50px);line-height:1.22;color:var(--nevoa);min-height:4.9em}
+.dep-autor{display:flex;align-items:center;gap:16px;margin-top:36px}
+.dep-autor img{width:72px;height:72px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--crepusculo),0 0 0 4px var(--ambar)}
+.dep-autor b{display:block;font-size:16px;font-weight:500}
+.dep-autor span{display:block;margin-top:4px;font-family:var(--rotulo);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ambar)}
+.dep-autor small{display:block;margin-top:4px;font-family:var(--rotulo);font-size:12px;color:rgba(244,238,230,.55)}
+.dep-nav{display:flex;flex-wrap:wrap;align-items:center;gap:20px;margin-top:56px}
+.dep-rostos{display:flex;gap:10px;list-style:none;margin:0;padding:0}
+.dep-rostos button{width:48px;height:48px;border-radius:50%;padding:0;border:0;cursor:pointer;overflow:hidden;background:transparent;opacity:.45;filter:grayscale(1);transition:opacity .4s,filter .4s,transform .4s,box-shadow .4s}
+.dep-rostos button img{width:100%;height:100%;object-fit:cover}
+.dep-rostos button[aria-current="true"]{opacity:1;filter:none;box-shadow:0 0 0 2px var(--crepusculo),0 0 0 3px var(--ambar);transform:scale(1.08)}
+.dep-rostos button:hover{opacity:.9}
+.dep-setas{display:flex;gap:10px;margin-left:auto}
+.dep-setas button{width:48px;height:48px;border-radius:50%;border:1px solid rgba(244,238,230,.3);background:transparent;color:var(--nevoa);cursor:pointer;display:grid;place-items:center;transition:background .3s,color .3s}
+.dep-setas button:hover{background:var(--nevoa);color:var(--crepusculo)}
+.dep-cont{font-family:var(--rotulo);font-size:12px;letter-spacing:.1em;color:var(--ambar);font-variant-numeric:tabular-nums}
+
+/* ================= 06 CONTATO ================= */
+.ct{position:relative;padding-block:120px 160px;color:var(--nevoa)}
+.ct .rot{color:var(--ambar)}
+.ct-grade{display:grid;gap:56px}
+@media (min-width:900px){.ct-grade{grid-template-columns:5fr 6fr;gap:72px;align-items:center}}
+.ct h2{font-size:clamp(40px,5.4vw,88px);line-height:.98;letter-spacing:-.015em;margin-top:20px}
+.ct h2 em{font-style:italic;color:var(--ambar)}
+.ct-sub{margin-top:24px;font-size:17px;color:rgba(244,238,230,.75);max-width:36ch}
+.ct-mini{position:relative;margin-top:48px;max-width:380px}
+.ct-mini .luz{position:absolute;inset:-20% -10% 0;background:radial-gradient(closest-side,rgba(240,170,96,.32),rgba(240,170,96,0));pointer-events:none}
+.ct-mini .casa-m{position:relative;transform-origin:50% 85%}
+.ct-mini .sombra{position:absolute;left:18%;right:18%;bottom:6%;height:22px;border-radius:50%;background:rgba(0,0,0,.45);filter:blur(10px)}
+.anima .ct-mini .casa-m{animation:flutua 2.8s ease-in-out infinite alternate}
+.anima .ct-mini .sombra{animation:sombra 2.8s ease-in-out infinite alternate}
+@keyframes flutua{to{transform:translateY(-14px) rotate(-2deg)}}
+@keyframes sombra{to{transform:scaleX(.8);opacity:.55}}
+.form{background:var(--nevoa);color:var(--carvao);border-radius:28px;padding:28px 22px;box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+@media (min-width:768px){.form{padding:40px}}
+.form fieldset{border:0;margin:0;padding:0}
+.form legend,.form label.c{font-size:14px;font-weight:600;color:var(--carvao)}
+.form .grupo{display:grid;gap:24px}
+.ops{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.ops label{cursor:pointer}
+.ops input{position:absolute;opacity:0;width:1px;height:1px}
+.ops span{display:inline-flex;border:1px solid rgba(92,82,68,.5);border-radius:999px;padding:9px 16px;font-size:14px;color:var(--carvao);transition:background .25s,color .25s,border-color .25s}
+.ops label:hover span{border-color:var(--carvao)}
+.ops input:checked + span{background:var(--araucaria);border-color:var(--araucaria);color:var(--nevoa)}
+.ops input:focus-visible + span{outline:2px solid var(--ambar);outline-offset:2px}
+.campos{display:grid;gap:16px}
+@media (min-width:600px){.campos{grid-template-columns:1fr 1fr}}
+.form input[type=text],.form input[type=tel]{margin-top:8px;width:100%;border:1px solid rgba(92,82,68,.5);border-radius:14px;padding:13px 16px;font:inherit;color:var(--carvao);background:transparent}
+.form input::placeholder{color:rgba(92,82,68,.65)}
+.botoes{display:grid;gap:10px;margin-top:28px}
+.botoes .btn{justify-content:center;padding:16px 24px;font-size:15px}
+.b2{background:transparent;border:1px solid rgba(92,82,68,.5);color:var(--carvao)}
+.b2:hover{border-color:var(--carvao)}
+.lgpd{margin-top:18px;font-size:12px;color:var(--terra)}
+
+/* ================= RODAPÉ ================= */
+.rod{color:var(--nevoa);padding-top:40px}
+.rod-topo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px 64px;padding-bottom:48px;border-bottom:1px solid rgba(244,238,230,.14)}
+.rod .frase{font-family:var(--titulo);font-size:20px;max-width:24ch}
+.rod-cols{display:flex;flex-wrap:wrap;gap:40px 64px}
+.rod-cols .rot{color:var(--ambar)}
+.rod-cols ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px;color:rgba(244,238,230,.85)}
+.rod-marca{overflow:hidden;padding-top:24px}
+.rod-marca p{font-family:var(--titulo);font-weight:300;font-size:clamp(64px,15.5vw,250px);line-height:.88;letter-spacing:-.035em;white-space:nowrap;color:var(--nevoa)}
+.rod-marca em{font-style:italic;color:var(--ambar)}
+.rod-fim{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-block:28px 36px;font-family:var(--rotulo);font-size:12px;color:rgba(244,238,230,.6)}
+
+/* ================= CELULAR ================= */
+.casas{display:grid;gap:72px}
+.pino .casas{display:contents}
+.casa-abrir,.toque,.proj-seg,.proc-palco,.dep-pilha,.dep-dica,.barra-acao,.passo-topo{display:none}
+
+/* cabeçalho some ao descer, volta ao subir */
+html.movel .cab{transition:transform .45s cubic-bezier(.22,.61,.36,1),background .5s,box-shadow .5s}
+html.movel .cab.some{transform:translateY(calc(-100% - env(safe-area-inset-top,0px)))}
+
+/* barra de ação ao alcance do polegar */
+html.movel .barra-acao{display:block;position:fixed;z-index:75;right:0;bottom:0;padding:12px var(--lado-d) calc(12px + env(safe-area-inset-bottom,0px)) var(--lado);
+  transform:translateY(120%);transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+html.movel .barra-acao.ver{transform:none}
+html.movel .barra-acao .btn{padding:15px 20px 15px 24px;font-size:15px;box-shadow:0 18px 40px -12px rgba(33,26,18,.55)}
+
+/* 02 · casas em carrossel com toque */
+html.movel .proj{padding-block:120px 48px}
+html.movel .proj-trilho{display:block}
+html.movel .proj-intro{gap:20px}
+html.movel .proj-seg{display:flex;gap:6px;margin:32px var(--lado-d) 14px var(--lado)}
+.proj-seg i{flex:1;height:2px;border-radius:2px;background:rgba(92,82,68,.2);position:relative;overflow:hidden}
+.proj-seg i::after{content:"";position:absolute;inset:0;background:var(--carvao);transform:scaleX(var(--f,0));transform-origin:left}
+html.movel .proj-seg i:first-child{--f:1}
+html.movel .casas{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:var(--lado) 0;cursor:grab;scroll-padding-inline:var(--lado);scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+html.movel .casas::-webkit-scrollbar{display:none}
+html.movel .casas::after{content:"";flex:0 0 max(1px,calc(var(--lado-d) - 12px))}
+html.movel .casa:last-of-type{scroll-snap-align:end}
+html.movel .casa img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+html.movel .casa{flex:0 0 84%;max-width:none;margin:0;width:auto;padding:0;scroll-snap-align:start}
+html.movel .casa-foto{aspect-ratio:auto;height:60svh;min-height:420px;max-height:640px;transition:transform .3s}
+html.movel .casa-foto:active{transform:scale(.98)}
+html.movel .casa-info{display:none}
+html.movel .casa-abrir{display:block;position:absolute;inset:0;z-index:2;background:transparent;border:0;padding:0;cursor:pointer;border-radius:24px}
+html.movel .toque{display:inline-flex;position:absolute;z-index:1;top:16px;right:16px;font-family:var(--rotulo);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--carvao);background:rgba(244,238,230,.9);border-radius:999px;padding:8px 12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+html.movel .casa-nome h3{font-size:clamp(38px,11vw,54px)}
+
+/* folha que sobe de baixo */
+.folha{position:fixed;inset:0;z-index:95}
+.folha-fundo{position:absolute;inset:0;background:rgba(28,23,36,.55);opacity:0;transition:opacity .45s}
+.folha.aberta .folha-fundo{opacity:1}
+.folha-painel{position:absolute;left:0;right:0;bottom:0;max-height:92svh;overflow-y:auto;overscroll-behavior:contain;background:var(--nevoa);color:var(--carvao);border-radius:28px 28px 0 0;
+  padding:22px 0 calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .55s cubic-bezier(.22,.61,.36,1)}
+.folha.aberta .folha-painel{transform:none}
+.folha-painel.arrastando{transition:none}
+.folha-alca{width:44px;height:5px;border-radius:5px;background:rgba(92,82,68,.3);margin:0 auto 14px}
+.folha-x{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:0;background:var(--linho);color:var(--carvao);display:grid;place-items:center;cursor:pointer}
+.folha-foto{margin:0 12px;border-radius:20px;overflow:hidden;aspect-ratio:4/3}
+.folha-foto img{width:100%;height:100%;object-fit:cover}
+.folha-corpo{display:grid;gap:12px;padding:22px var(--lado-d) 0 var(--lado)}
+.folha-corpo h3{font-size:38px;line-height:1;letter-spacing:-.01em}
+.folha-corpo h3 em{font-style:italic;color:var(--madeira)}
+.folha-corpo p{color:var(--terra);font-size:16px}
+.folha-corpo .btn{justify-content:center;padding:16px;margin-top:10px}
+
+/* 03 · cartões que se empilham */
+html.movel .pq{padding-block:120px 80px}
+html.movel .pq-lista{margin-top:40px}
+html.movel .pq-lista::after,html.movel .pq-item::before{display:none}
+html.movel .pq-item{position:sticky;top:calc(84px + var(--i) * 18px);margin-bottom:28px;padding:22px 22px 26px;border-radius:26px;background:var(--cor);color:var(--nevoa);gap:16px;transform-origin:50% 0;
+  box-shadow:0 -16px 40px -24px rgba(33,26,18,.45)}
+html.movel .pq-item .tag{color:rgba(244,238,230,.75)}
+html.movel .pq-item h3{color:var(--nevoa);font-size:32px}
+html.movel .pq-item p{color:rgba(244,238,230,.86)}
+html.movel .pq-img{order:-1;aspect-ratio:16/10}
+
+/* 04 · a casa fica parada em cima e as etapas passam embaixo */
+html.movel .proc-palco{display:block;position:sticky;top:76px;z-index:2;margin-top:36px;height:44svh;min-height:260px;max-height:420px;border-radius:24px;overflow:hidden;background:var(--nevoa);box-shadow:0 30px 60px -36px rgba(33,26,18,.5)}
+.proc-palco .etapa-fig{position:absolute;inset:0;aspect-ratio:auto;border-radius:0;box-shadow:none;clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.65,0,.35,1)}
+.proc-palco .etapa-fig:first-of-type,.proc-palco .etapa-fig.on{clip-path:inset(0 0 0 0)}
+.proc-pontos{position:absolute;z-index:3;right:14px;top:16px;display:flex;gap:5px}
+.proc-pontos i{display:block;width:6px;height:6px;border-radius:6px;background:rgba(244,238,230,.85);box-shadow:0 0 0 1px rgba(33,26,18,.15);transition:width .4s,background .4s}
+.proc-pontos i.on{width:20px;background:var(--ambar)}
+html.movel .proc-etapas{margin-top:0;gap:0}
+html.movel .etapa .etapa-fig{display:none}
+html.movel .etapa{min-height:52svh;align-content:center;opacity:.28;transition:opacity .5s}
+html.movel .etapa.ativa{opacity:1}
+html.movel .etapa-n{font-size:84px}
+
+/* 05 · pilha de depoimentos para arrastar */
+html.movel .dep-palco{display:none}
+html.movel .bruma{opacity:.22}
+html.movel .dep-pilha{display:block;position:relative;margin-top:48px;height:400px}
+.dp-card{position:absolute;inset:0;background:var(--nevoa);color:var(--carvao);border-radius:26px;padding:26px 24px;display:flex;flex-direction:column;justify-content:space-between;touch-action:pan-y;user-select:none;-webkit-user-select:none;
+  box-shadow:0 24px 50px -24px rgba(0,0,0,.6);cursor:grab;will-change:transform}
+.dp-card blockquote{margin:0;font-family:var(--titulo);font-style:italic;font-weight:300;font-size:23px;line-height:1.32}
+.dp-card blockquote::before{content:"“";display:block;font-size:64px;line-height:.6;height:30px;color:var(--madeira)}
+.dp-autor{display:flex;align-items:center;gap:14px}
+.dp-autor img{width:56px;height:56px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--nevoa),0 0 0 4px var(--ambar);pointer-events:none}
+.dp-autor b{display:block;font-size:15px;font-weight:600}
+.dp-autor span{display:block;margin-top:2px;font-family:var(--rotulo);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--madeira)}
+html.movel .dep-dica{display:block;margin-top:22px;color:rgba(244,238,230,.55)}
+html.movel .dep-nav{margin-top:24px}
+html.movel .dep-rostos button{width:40px;height:40px}
+
+/* 06 · formulário em passos */
+html.movel .ct{padding-block:120px 140px}
+html.movel .ct-mini{max-width:260px;margin:32px auto 0}
+.form.passos .passo-topo{display:grid;gap:12px;margin-bottom:22px}
+.passo-linha{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.passo-txt{font-family:var(--rotulo);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra)}
+.passo-voltar{font:500 14px var(--texto);color:var(--madeira);background:none;border:0;padding:10px 0;cursor:pointer}
+.passo-voltar[disabled]{visibility:hidden}
+.passo-barra{height:3px;border-radius:3px;background:var(--linho);overflow:hidden}
+.passo-barra i{display:block;height:100%;background:var(--araucaria);transform-origin:left;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.form.passos .grupo > .fora{display:none}
+.form.passos .grupo > :not(.fora){animation:entra .5s cubic-bezier(.22,.61,.36,1)}
+@keyframes entra{from{opacity:0;transform:translateX(28px)}}
+.form.passos:not(.fim) .botoes,.form.passos:not(.fim) .lgpd{display:none}
+.form.passos legend,.form.passos .campos .c{font-family:var(--titulo);font-weight:400;font-size:28px;line-height:1.1;margin-bottom:6px}
+.form.passos .campos{grid-template-columns:1fr}
+.form.passos .ops{gap:10px;margin-top:16px}
+.form.passos .ops span{padding:15px 20px;font-size:16px}
+.form.passos .ops label{flex:1 1 auto}
+.form.passos .ops span{width:100%;justify-content:center}
+.form.passos input[type=text],.form.passos input[type=tel]{padding:16px;font-size:17px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+}
+</style>
+
+<div class="ceu" aria-hidden="true"></div>
+<div class="grao" aria-hidden="true"></div>
+
+<header class="cab faixa" id="cab">
+  <div class="caixa">
+    <a class="marca" href="#inicio" aria-label="Estúdio Vazio, voltar ao início">
+      <img class="esc" src="img/logo-horizontal.svg" alt="" width="770" height="145">
+      <img class="claro" src="img/logo-horizontal-claro.svg" alt="" width="770" height="145">
+    </a>
+    <nav aria-label="Principal"><a href="#projetos">Projetos</a><a href="#processo">Processo</a><a href="#contato">Contato</a></nav>
+    <a class="btn btn-esc" href="#contato"><span class="curto">Agendar</span><span class="longo">Agendar reunião</span></a>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="inicio" aria-labelledby="t0">
+  <div class="hero-midia" id="hero-midia">
+    <img src="img/hero-poster.webp" alt="" aria-hidden="true">
+    <video id="video" muted loop playsinline preload="none" poster="img/hero-poster.webp" aria-hidden="true"><source src="img/hero-loop.mp4" type="video/mp4"></video>
+  </div>
+  <div class="hero-veu"></div>
+  <div class="hero-bruma"></div>
+  <div class="hero-cont faixa">
+    <div class="caixa" style="width:100%" id="hero-txt">
+      <h1 id="t0" class="divide">A casa que a serra estava <em>esperando.</em></h1>
+      <p class="hero-sub">Projetamos casas de madeira e vidro para quem já tem um terreno na região de Pedra Azul e quer viver em meio à natureza.</p>
+    </div>
+    <div class="caixa" style="width:100%">
+      <div class="hero-acoes">
+        <a class="btn btn-ambar" href="#contato">Agendar reunião <span class="btn-seta" aria-hidden="true">→</span></a>
+        <a class="link-seta" href="#projetos">Ver projetos →</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-pe rot"><i aria-hidden="true"></i>Role para conhecer</div>
+</section>
+
+<!-- 01 MANIFESTO -->
+<section id="manifesto" aria-labelledby="t1">
+  <div class="mani-texto faixa">
+    <div class="caixa">
+      <div class="mani-topo"><span class="rot">01 · Manifesto</span><h2 id="t1">O vazio é onde a vida acontece.</h2></div>
+      <div class="mani-grande">
+        <p class="divide-pal">Queríamos transformar nosso lar num lugar de paz: silêncio, luz natural e a mata por perto. Foi desenhando essa casa que entendemos o que mais importa nela, o espaço livre entre as coisas, por onde passam a luz, o ar e a paisagem.</p>
+        <p class="divide-pal">Daí vem o nosso nome. Hoje levamos esse mesmo cuidado para quem tem um pedaço de serra e quer viver nele com conforto e segurança.</p>
+      </div>
+    </div>
+  </div>
+  <div class="expande" id="expande">
+    <div class="expande-img"><img src="img/manifesto-interior.webp" alt="Sala de uma casa de madeira com parede de vidro do chão ao teto, uma poltrona e uma mesa baixa com café, de frente para as araucárias e a Pedra Azul."></div>
+    <span class="exp-p exp-l" aria-hidden="true">o espaço</span>
+    <span class="exp-p exp-r" aria-hidden="true">livre</span>
+    <div class="expande-veu"></div>
+    <div class="expande-nums faixa">
+      <div class="en"><i></i><b>12<small>anos</small></b><span>projetando na serra</span></div>
+      <div class="en"><i></i><b>38<small>casas</small></b><span>entregues</span></div>
+      <div class="en"><i></i><b>100<small>%</small></b><span>das obras acompanhadas por nós</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 PROJETOS -->
+<section id="projetos" class="proj" aria-labelledby="t2">
+  <div class="proj-trilho" id="proj-trilho">
+    <div class="proj-intro faixa-mob">
+      <span class="rot">02 · Projetos</span>
+      <h2 id="t2">Casas que já nasceram <em>na serra</em></h2>
+      <a class="link-seta" href="#contato" style="justify-self:start;color:var(--madeira)">Agendar reunião →</a>
+      <span class="dica rot"><i aria-hidden="true"></i>Continue rolando</span>
+    </div>
+
+    <div class="proj-seg" id="proj-seg" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="casas" id="casas">
+    <article class="casa faixa-mob">
+      <div class="casa-foto"><img src="img/casa-araucaria.webp" alt="Casa de madeira com fachada de vidro do chão ao telhado e base de pedra, entre araucárias, com a Pedra Azul ao fundo.">
+        <button type="button" class="casa-abrir"><span class="sr">Ver detalhes</span></button><span class="toque" aria-hidden="true">Toque para ver +</span><div class="casa-nome"><h3>Casa <em>Araucária</em></h3><span>Domingos Martins · Pedra Azul</span></div></div>
+      <div class="casa-info"><span class="casa-area">180<small>m²</small></span><div><p>Dois pavimentos com fachada de vidro do chão ao telhado, de frente para a Pedra Azul. A base de pedra vence o desnível do terreno, e a sala vira mirante nas manhãs de neblina.</p><ul class="etq"><li>2 pavimentos</li><li>Base de pedra</li></ul></div></div>
+    </article>
+
+    <article class="casa faixa-mob">
+      <div class="casa-foto"><img src="img/casa-do-vale.webp" alt="Casa térrea e comprida de madeira e vidro, com varanda corrida, na borda de um vale com neblina ao entardecer.">
+        <button type="button" class="casa-abrir"><span class="sr">Ver detalhes</span></button><span class="toque" aria-hidden="true">Toque para ver +</span><div class="casa-nome"><h3>Casa do <em>Vale</em></h3><span>Venda Nova do Imigrante</span></div></div>
+      <div class="casa-info"><span class="casa-area">140<small>m²</small></span><div><p>Térrea e comprida, com varanda corrida na borda do vale. Feita para quem trabalha de casa: luz natural o dia inteiro e vidro duplo para as noites frias.</p><ul class="etq"><li>Térrea</li><li>Varanda corrida</li></ul></div></div>
+    </article>
+
+    <article class="casa faixa-mob">
+      <div class="casa-foto"><img src="img/refugio-da-neblina.webp" alt="Casa pequena de madeira escura com varanda e janelas acesas, ao lado de uma horta, numa clareira com neblina.">
+        <button type="button" class="casa-abrir"><span class="sr">Ver detalhes</span></button><span class="toque" aria-hidden="true">Toque para ver +</span><div class="casa-nome"><h3>Refúgio da <em>Neblina</em></h3><span>Marechal Floriano</span></div></div>
+      <div class="casa-info"><span class="casa-area">95<small>m²</small></span><div><p>Pequena e num andar só, do jeito que os moradores pediram: madeira escura, varanda para ver a chuva chegar e a horta a poucos passos da porta.</p><ul class="etq"><li>1 pavimento</li><li>Horta</li></ul></div></div>
+    </article>
+    </div>
+  </div>
+  <div class="proj-barra" aria-hidden="true"><span class="proj-cont" id="proj-cont">01 / 03</span><span class="linha"><i id="proj-linha"></i></span><span class="rot">Pedra Azul → Marechal Floriano</span></div>
+</section>
+
+<div class="folha" id="folha" hidden>
+  <div class="folha-fundo" data-fechar></div>
+  <div class="folha-painel" id="folha-painel" role="dialog" aria-modal="true" aria-labelledby="folha-t">
+    <div class="folha-alca" aria-hidden="true"></div>
+    <button class="folha-x" type="button" data-fechar aria-label="Fechar detalhes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg></button>
+    <div class="folha-foto"><img id="folha-img" src="" alt=""></div>
+    <div class="folha-corpo">
+      <span class="rot" id="folha-local"></span>
+      <h3 id="folha-t"></h3>
+      <span class="casa-area" id="folha-area"></span>
+      <p id="folha-p"></p>
+      <ul class="etq" id="folha-etq"></ul>
+      <a class="btn btn-ambar" href="#contato" data-fechar>Agendar reunião <span class="btn-seta" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- 03 POR QUE NÓS -->
+<section id="por-que-nos" class="pq faixa" aria-labelledby="t3">
+  <div class="caixa">
+    <span class="rot">03 · Por que nós</span>
+    <div class="pq-topo" style="margin-top:24px">
+      <h2 id="t3">Uma casa pensada para a serra, <em>não adaptada a ela.</em></h2>
+      <p>Para quem já tem o terreno e quer ter certeza de que a casa vai funcionar ali.</p>
+    </div>
+    <ul class="pq-lista" id="pq-lista">
+      <li class="pq-item" data-img="0" style="--i:0;--cor:#3E4A32">
+        <div><span class="tag">O terreno</span><div class="pq-t"><h3>Projeto para terreno de serra</h3></div></div>
+        <div class="pq-img"><img src="img/det-pedra.webp" alt=""></div>
+        <p>Desnível, sol da manhã, vento e neblina entram no desenho desde a primeira visita. A casa se encaixa no terreno, em vez de brigar com ele.</p>
+      </li>
+      <li class="pq-item" data-img="1" style="--i:1;--cor:#87582B">
+        <div><span class="tag">O conforto</span><div class="pq-t"><h3>Madeira e vidro, com conforto no frio</h3></div></div>
+        <div class="pq-img"><img src="img/det-vidro.webp" alt=""></div>
+        <p>Vidro duplo, madeira tratada e isolamento pensados para as noites frias da serra. Muita luz durante o dia, casa quente à noite.</p>
+      </li>
+      <li class="pq-item" data-img="2" style="--i:2;--cor:#211A12">
+        <div><span class="tag">A obra</span><div class="pq-t"><h3>Acompanhamos a obra até as chaves</h3></div></div>
+        <div class="pq-img"><img src="img/det-obra.webp" alt=""></div>
+        <p>Visitamos a obra com frequência e tiramos as dúvidas do construtor. O que foi desenhado é o que você recebe.</p>
+      </li>
+    </ul>
+  </div>
+  <div class="flutua" id="flutua" aria-hidden="true"><img src="img/det-pedra.webp" alt=""><img src="img/det-vidro.webp" alt=""><img src="img/det-obra.webp" alt=""></div>
+</section>
+
+<!-- 04 PROCESSO -->
+<section id="processo" class="proc faixa" aria-labelledby="t4">
+  <div class="caixa proc-topo">
+    <div><span class="rot">04 · Processo</span><h2 id="t4" style="margin-top:16px">Do terreno à chave, <em>em cinco passos</em></h2></div>
+    <p>Você sabe desde o começo o que acontece em cada etapa.</p>
+  </div>
+  <ol class="caixa proc-etapas" id="proc-etapas" style="width:100%">
+    <li class="etapa"><div class="etapa-txt"><span class="etapa-n">01</span><h3>Visita ao terreno</h3><p>Vamos até o terreno entender o sol, o vento, o desnível e a vista.</p></div>
+      <div class="etapa-fig"><span class="chip">Levantamento</span><svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Levantamento do terreno com curvas de nível, limite do lote, nascente do sol e direção do vento.">
+<defs><pattern id="gr1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#E8DED0" stroke-width="1"/></pattern></defs>
+<rect width="800" height="600" fill="#F4EEE6"/><rect width="800" height="600" fill="url(#gr1)"/>
+<path d="M-20 100 L1 108 L22 117 L43 124 L64 130 L85 134 L106 135 L127 134 L148 131 L169 126 L190 120 L211 113 L232 108 L253 103 L274 100 L295 98 L316 98 L337 99 L358 101 L379 102 L400 103 L421 102 L442 99 L463 94 L484 88 L505 81 L526 73 L547 65 L568 59 L589 54 L610 52 L631 52 L652 56 L673 62 L694 71 L715 81 L736 92 L757 102 L778 112 L799 120 L820 126" fill="none" stroke="#5C5244" stroke-width="1.6" opacity="1"/><path d="M-20 177 L1 182 L22 184 L43 184 L64 181 L85 177 L106 171 L127 164 L148 158 L169 152 L190 148 L211 146 L232 145 L253 145 L274 146 L295 147 L316 148 L337 147 L358 145 L379 141 L400 135 L421 128 L442 120 L463 111 L484 104 L505 98 L526 94 L547 93 L568 94 L589 99 L610 106 L631 115 L652 125 L673 136 L694 145 L715 154 L736 160 L757 165 L778 168 L799 169 L820 169" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 233 L1 229 L22 223 L43 217 L64 210 L85 204 L106 198 L127 195 L148 193 L169 192 L190 193 L211 194 L232 194 L253 194 L274 192 L295 189 L316 183 L337 176 L358 168 L379 159 L400 151 L421 143 L442 138 L463 135 L484 135 L505 138 L526 144 L547 151 L568 161 L589 171 L610 180 L631 189 L652 196 L673 202 L694 205 L715 206 L736 207 L757 206 L778 206 L799 206 L820 208" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 263 L1 256 L22 250 L43 246 L64 243 L85 241 L106 241 L127 242 L148 242 L169 242 L190 241 L211 238 L232 233 L253 226 L274 218 L295 209 L316 200 L337 191 L358 185 L379 180 L400 178 L421 179 L442 183 L463 190 L484 198 L505 207 L526 217 L547 226 L568 233 L589 239 L610 243 L631 245 L652 245 L673 245 L694 244 L715 244 L736 244 L757 246 L778 250 L799 255 L820 261" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 295 L1 292 L22 291 L43 291 L64 291 L85 291 L106 290 L127 288 L148 284 L169 277 L190 269 L211 260 L232 251 L253 241 L274 233 L295 227 L316 223 L337 223 L358 225 L379 230 L400 237 L421 245 L442 255 L463 263 L484 271 L505 278 L526 282 L547 285 L568 285 L589 285 L610 284 L631 283 L652 283 L673 284 L694 286 L715 290 L736 296 L757 302 L778 308 L799 314 L820 319" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 311 L1 314 L22 316 L43 316 L64 315 L85 312 L106 307 L127 300 L148 292 L169 284 L190 276 L211 270 L232 266 L253 265 L274 266 L295 270 L316 277 L337 285 L358 294 L379 303 L400 311 L421 317 L442 322 L463 325 L484 325 L505 324 L526 322 L547 320 L568 318 L589 317 L610 317 L631 318 L652 321 L673 325 L694 329 L715 332 L736 335 L757 335 L778 334 L799 329 L820 323" fill="none" stroke="#5C5244" stroke-width="1.6" opacity="1"/><path d="M-20 357 L1 355 L22 351 L43 345 L64 337 L85 329 L106 321 L127 315 L148 310 L169 307 L190 307 L211 310 L232 316 L253 323 L274 332 L295 341 L316 350 L337 358 L358 363 L379 367 L400 369 L421 369 L442 368 L463 366 L484 364 L505 362 L526 362 L547 363 L568 365 L589 369 L610 373 L631 378 L652 381 L673 383 L694 382 L715 380 L736 374 L757 366 L778 357 L799 346 L820 334" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 382 L1 374 L22 366 L43 359 L64 353 L85 349 L106 348 L127 350 L148 355 L169 361 L190 370 L211 379 L232 388 L253 397 L274 404 L295 409 L316 411 L337 412 L358 412 L379 410 L400 408 L421 407 L442 406 L463 407 L484 409 L505 413 L526 417 L547 422 L568 426 L589 429 L610 430 L631 428 L652 425 L673 418 L694 409 L715 399 L736 388 L757 377 L778 366 L799 358 L820 352" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 396 L1 391 L22 389 L43 390 L64 393 L85 399 L106 407 L127 416 L148 425 L169 434 L190 442 L211 448 L232 452 L253 455 L274 455 L295 454 L316 452 L337 451 L358 450 L379 450 L400 452 L421 455 L442 460 L463 464 L484 469 L505 473 L526 475 L547 476 L568 473 L589 468 L610 461 L631 451 L652 440 L673 429 L694 419 L715 410 L736 402 L757 398 L778 395 L799 396 L820 398" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 431 L1 436 L22 443 L43 452 L64 462 L85 471 L106 480 L127 487 L148 492 L169 495 L190 497 L211 496 L232 495 L253 494 L274 493 L295 493 L316 494 L337 497 L358 501 L379 506 L400 511 L421 516 L442 520 L463 521 L484 520 L505 517 L526 511 L547 502 L568 492 L589 481 L610 471 L631 461 L652 453 L673 447 L694 444 L715 443 L736 445 L757 448 L778 452 L799 456 L820 460" fill="none" stroke="#9A9493" stroke-width="1" opacity="0.8"/><path d="M-20 497 L1 507 L22 516 L43 524 L64 530 L85 535 L106 537 L127 538 L148 537 L169 536 L190 535 L211 535 L232 536 L253 538 L274 542 L295 547 L316 553 L337 558 L358 562 L379 565 L400 566 L421 564 L442 559 L463 552 L484 543 L505 532 L526 522 L547 512 L568 503 L589 496 L610 492 L631 490 L652 491 L673 493 L694 497 L715 502 L736 506 L757 510 L778 512 L799 512 L820 511" fill="none" stroke="#5C5244" stroke-width="1.6" opacity="1"/>
+<text x="60" y="118" font-family="IBM Plex Mono,monospace" font-size="12" fill="#5C5244">cota 1.240</text>
+<text x="60" y="338" font-family="IBM Plex Mono,monospace" font-size="12" fill="#5C5244">cota 1.220</text>
+<path d="M230 190 L610 150 L670 420 L270 470 Z" fill="rgba(135,88,43,.06)" stroke="#87582B" stroke-width="2" stroke-dasharray="10 7"/>
+<text x="300" y="300" font-family="IBM Plex Mono,monospace" font-size="13" letter-spacing="2" fill="#87582B">LIMITE DO LOTE</text>
+<circle cx="705" cy="92" r="16" fill="none" stroke="#87582B" stroke-width="2"/>
+<path d="M705 62v-12M705 122v12M675 92h-12M735 92h12M684 71l-8-8M726 113l8 8M684 113l-8 8M726 71l8-8" stroke="#87582B" stroke-width="2"/>
+<text x="650" y="160" font-family="IBM Plex Mono,monospace" font-size="12" fill="#5C5244">NASCENTE</text>
+<g stroke="#3E4A32" stroke-width="2" fill="none" stroke-linecap="round"><path d="M70 470h90m-14-10 14 10-14 10"/><path d="M50 505h110m-14-10 14 10-14 10"/><path d="M80 540h80m-14-10 14 10-14 10"/></g>
+<text x="50" y="580" font-family="IBM Plex Mono,monospace" font-size="12" fill="#3E4A32">VENTO SUDESTE</text>
+<g transform="translate(730 520)"><path d="M0 -34 L12 10 L0 2 L-12 10 Z" fill="#211A12"/><text x="-5" y="32" font-family="IBM Plex Mono,monospace" font-size="14" fill="#211A12">N</text></g>
+</svg></div></li>
+    <li class="etapa"><div class="etapa-txt"><span class="etapa-n">02</span><h3>Conceito</h3><p>Primeiros croquis e uma conversa sobre como você quer viver na casa.</p></div>
+      <div class="etapa-fig"><span class="chip">Croqui</span><img src="img/etapa-croqui.webp" alt="Croqui a lápis da casa de madeira e vidro entre araucárias." loading="lazy"></div></li>
+    <li class="etapa"><div class="etapa-txt"><span class="etapa-n">03</span><h3>Projeto</h3><p>Plantas, cortes e detalhes de madeira e vidro, prontos para aprovação na prefeitura.</p></div>
+      <div class="etapa-fig"><span class="chip">Planta baixa</span><svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Planta baixa da casa com sala e cozinha integradas, dois quartos, banheiro, fachada de vidro e varanda.">
+<defs><pattern id="gr2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#E8DED0" stroke-width="1"/></pattern></defs>
+<rect width="800" height="600" fill="#F4EEE6"/><rect width="800" height="600" fill="url(#gr2)"/>
+<rect x="150" y="430" width="500" height="70" fill="rgba(135,88,43,.07)" stroke="#87582B" stroke-width="1.5" stroke-dasharray="8 6"/>
+<g stroke="#211A12" fill="none" stroke-linecap="square">
+<path d="M150 430V130H650V430" stroke-width="7"/>
+<path d="M430 130V240M430 290V430M430 280H520M570 280H650M560 280V430" stroke-width="4"/>
+<path d="M150 426H650M150 434H650" stroke-width="1.5"/>
+<path d="M240 426v8M330 426v8M420 426v8M510 426v8M600 426v8" stroke-width="1.5"/>
+<path d="M430 240a50 50 0 0 1 -50 50" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M520 280a50 50 0 0 0 50 -50" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="170" y="148" width="190" height="26" stroke-width="1.5"/>
+<rect x="220" y="230" width="110" height="40" stroke-width="1.5"/>
+<rect x="190" y="330" width="150" height="56" rx="6" stroke-width="1.5"/>
+<rect x="590" y="300" width="44" height="32" rx="4" stroke-width="1.5"/>
+<rect x="460" y="150" width="120" height="90" stroke-width="1.2"/>
+</g>
+<g font-family="IBM Plex Mono,monospace" font-size="13" letter-spacing="2" fill="#5C5244">
+<text x="215" y="312">SALA · COZINHA</text><text x="505" y="268">QUARTO</text><text x="462" y="360">QUARTO</text><text x="575" y="372" font-size="11">BANHO</text>
+<text x="350" y="475" fill="#87582B">VARANDA</text></g>
+<g stroke="#5C5244" stroke-width="1"><path d="M150 92H650M150 84v16M650 84v16"/><path d="M108 130V430M100 130h16M100 430h16"/></g>
+<text x="372" y="80" font-family="IBM Plex Mono,monospace" font-size="13" fill="#211A12">12,40 m</text>
+<text x="96" y="292" font-family="IBM Plex Mono,monospace" font-size="13" fill="#211A12" transform="rotate(-90 96 292)">7,20 m</text>
+<text x="150" y="560" font-family="IBM Plex Mono,monospace" font-size="12" letter-spacing="2" fill="#5C5244">PLANTA BAIXA · ESC. 1:100</text>
+<g transform="translate(730 520)"><path d="M0 -34 L12 10 L0 2 L-12 10 Z" fill="#211A12"/><text x="-5" y="32" font-family="IBM Plex Mono,monospace" font-size="14" fill="#211A12">N</text></g>
+</svg></div></li>
+    <li class="etapa"><div class="etapa-txt"><span class="etapa-n">04</span><h3>Visualização 3D</h3><p>Você percorre a casa antes de ela existir e ajusta o que quiser.</p></div>
+      <div class="etapa-fig"><span class="chip">Maquete 3D</span><img src="img/etapa-maquete.webp" alt="Maquete branca da casa, sem cores, no terreno." loading="lazy"></div></li>
+    <li class="etapa"><div class="etapa-txt"><span class="etapa-n">05</span><h3>Obra</h3><p>Acompanhamos a construção de perto até a entrega das chaves.</p></div>
+      <div class="etapa-fig"><span class="chip">Casa entregue</span><img src="img/casa-araucaria.webp" alt="A casa pronta: madeira, fachada de vidro e base de pedra, com a Pedra Azul ao fundo." loading="lazy"></div></li>
+  </ol>
+  <ol class="caixa proc-marcas" id="proc-marcas" aria-hidden="true" style="width:100%">
+    <li class="on"><i></i>Visita</li><li><i></i>Conceito</li><li><i></i>Projeto</li><li><i></i>3D</li><li><i></i>Obra</li>
+  </ol>
+</section>
+
+<!-- 05 DEPOIMENTOS -->
+<section id="depoimentos" class="dep faixa" aria-labelledby="t5">
+  <div class="bruma" aria-hidden="true"><span style="left:2%;top:30%;width:40%;height:60%"></span><span style="left:34%;top:10%;width:44%;height:70%"></span><span style="left:70%;top:34%;width:36%;height:56%"></span></div>
+  <div class="caixa">
+    <div class="dep-topo"><div><span class="rot">05 · Depoimentos</span><h2 id="t5" style="margin-top:20px">Quem já mora na serra</h2></div><p>Cinco casas, cinco terrenos diferentes.</p></div>
+    <div class="dep-palco">
+      <div class="dep-aspas" aria-hidden="true">“</div>
+      <figure aria-live="polite">
+        <blockquote class="dep-q" id="dep-q"></blockquote>
+        <figcaption class="dep-autor" id="dep-autor"></figcaption>
+      </figure>
+    </div>
+    <div class="dep-pilha" id="dep-pilha" aria-hidden="true"></div>
+    <p class="dep-dica rot">Arraste para o lado →</p>
+    <div class="dep-nav">
+      <ul class="dep-rostos" id="dep-rostos"></ul>
+      <span class="dep-cont" id="dep-cont">01 / 05</span>
+      <div class="dep-setas">
+        <button type="button" id="dep-ant" aria-label="Depoimento anterior"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 5 L8 12 L15 19" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" id="dep-prox" aria-label="Próximo depoimento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5 L16 12 L9 19" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 CONTATO -->
+<section id="contato" class="ct faixa" aria-labelledby="t6">
+  <div class="caixa ct-grade">
+    <div>
+      <span class="rot">06 · Contato</span>
+      <h2 id="t6">Conte sobre seu <em>terreno</em></h2>
+      <p class="ct-sub">Três perguntas rápidas. Montamos a mensagem e você fala direto com o escritório pelo WhatsApp.</p>
+      <div class="ct-mini" aria-hidden="true"><div class="luz"></div><div class="sombra"></div><img class="casa-m" src="img/miniatura-terreno.webp" alt=""></div>
+    </div>
+    <form class="form" id="form" novalidate>
+      <div class="grupo">
+        <fieldset><legend>O que você precisa?</legend><div class="ops">
+          <label><input type="radio" name="nec" id="nec1"><span>Projeto</span></label>
+          <label><input type="radio" name="nec" id="nec2"><span>Projeto + Obra</span></label></div></fieldset>
+        <fieldset><legend>Onde fica o terreno?</legend><div class="ops">
+          <label><input type="radio" name="loc" id="loc1"><span>Pedra Azul</span></label>
+          <label><input type="radio" name="loc" id="loc2"><span>Domingos Martins</span></label>
+          <label><input type="radio" name="loc" id="loc3"><span>Venda Nova do Imigrante</span></label>
+          <label><input type="radio" name="loc" id="loc4"><span>Marechal Floriano</span></label>
+          <label><input type="radio" name="loc" id="loc5"><span>Outro</span></label></div></fieldset>
+        <fieldset><legend>Tamanho aproximado da casa</legend><div class="ops">
+          <label><input type="radio" name="tam" id="tam1"><span>até 100 m²</span></label>
+          <label><input type="radio" name="tam" id="tam2"><span>100 a 200 m²</span></label>
+          <label><input type="radio" name="tam" id="tam3"><span>mais de 200 m²</span></label></div></fieldset>
+        <div class="campos">
+          <div><label class="c" for="nome">Nome</label><input type="text" id="nome" placeholder="Seu nome"></div>
+          <div><label class="c" for="zap">WhatsApp</label><input type="tel" id="zap" placeholder="(27) 9 0000-0000"></div>
+        </div>
+      </div>
+      <div class="botoes">
+        <button type="submit" class="btn btn-ambar">Agendar reunião pelo WhatsApp</button>
+        <button type="button" class="btn b2">Prefiro que me liguem</button>
+      </div>
+      <p class="lgpd">Usamos seus dados só para responder ao seu contato. <a href="#contato">Política de privacidade</a></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<div class="barra-acao" id="barra-acao"><a class="btn btn-ambar" href="#contato">Agendar reunião <span class="btn-seta" aria-hidden="true">→</span></a></div>
+
+<footer class="rod faixa">
+  <div class="caixa">
+    <div class="rod-topo">
+      <p class="frase">Casas de madeira e vidro para quem escolheu viver na serra capixaba.</p>
+      <div class="rod-cols">
+        <div><span class="rot">Contato</span><ul><li>WhatsApp</li><li>estudiovazio.contato@gmail.com</li></ul></div>
+        <div><span class="rot">Escritório</span><ul><li>Vitória · ES</li><li>Atendimento com hora marcada</li><li>Seg. a sex., das 9h às 18h</li></ul></div>
+      </div>
+    </div>
+    <div class="rod-marca" aria-hidden="true"><p id="rod-marca">Estúdio <em>Vazio</em></p></div>
+    <div class="rod-fim"><span>© 2026 Estúdio Vazio · CAU A000000-0</span><a href="#contato">Política de privacidade</a></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var q = function(s, c){ return (c || document).querySelector(s); };
+  var qa = function(s, c){ return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* ---------- divisão de palavras (antes de tudo) ---------- */
+  function dividir(el, cls){
+    var nos = Array.prototype.slice.call(el.childNodes);
+    el.innerHTML = '';
+    nos.forEach(function(n){
+      if(n.nodeType === 3){
+        n.textContent.split(/(\s+)/).forEach(function(t){
+          if(!t) return;
+          if(/^\s+$/.test(t)){ el.appendChild(document.createTextNode(t)); return; }
+          el.appendChild(embrulhar(t, cls));
+        });
+      } else {
+        var w = n.cloneNode(false);
+        n.textContent.split(/(\s+)/).forEach(function(t){
+          if(!t) return;
+          if(/^\s+$/.test(t)){ w.appendChild(document.createTextNode(t)); return; }
+          w.appendChild(embrulhar(t, cls));
+        });
+        el.appendChild(w);
+      }
+    });
+  }
+  function embrulhar(t, cls){
+    if(cls === 'pi'){ var m = document.createElement('span'); m.className = 'pm'; var i = document.createElement('span'); i.className = 'pi'; i.textContent = t; m.appendChild(i); return m; }
+    var s = document.createElement('span'); s.className = cls; s.textContent = t; return s;
+  }
+  qa('.divide').forEach(function(el){ dividir(el, 'pi'); });
+  qa('.divide-pal').forEach(function(el){ dividir(el, 'pal'); });
+
+  /* ---------- depoimentos ---------- */
+  var deps = [
+    { n:'Helena e Rafael Moraes', c:'Casa Araucária · Pedra Azul', t:'Tínhamos o terreno havia cinco anos e não sabíamos por onde começar. Hoje a gente toma café vendo a neblina passar na frente da Pedra Azul.', d:'Moram na casa desde 2023', f:'moraes', a:'Helena e Rafael Moraes na varanda de casa.' },
+    { n:'Juliana Prates', c:'Casa do Vale · Venda Nova do Imigrante', t:'Trabalho de casa e queria luz o dia inteiro sem passar frio à noite. Me explicaram cada escolha, e o vidro duplo fez toda a diferença.', d:'Home office na serra desde 2024', f:'prates', a:'Juliana Prates na varanda de casa.' },
+    { n:'Antônio e Cida Bertoldi', c:'Refúgio da Neblina · Marechal Floriano', t:'Casa pequena, do jeito que a gente pediu: tudo num andar só, perto da horta, com uma varanda para ver a chuva chegar.', d:'Aposentados · 95 m²', f:'bertoldi', a:'Antônio e Cida Bertoldi na varanda de casa.' },
+    { n:'Família Zanotti', c:'Casa Bromélia · Domingos Martins', t:'O terreno era todo em desnível e três construtores disseram que não dava. A casa ficou em cima do morro e as crianças vivem no gramado.', d:'Projeto + Obra · 2022', f:'zanotti', a:'Casal Zanotti na varanda de casa.' },
+    { n:'Marcos Lyra', c:'Casa do Mirante · Pedra Azul', t:'Moro em Vitória e não podia ir à obra toda semana. Recebia fotos e relatório a cada visita. Quando peguei a chave, estava tudo como no 3D.', d:'Casa de fim de semana · 2025', f:'lyra', a:'Marcos Lyra na varanda de casa.' }
+  ];
+  var reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dq = q('#dep-q'), da = q('#dep-autor'), rostos = q('#dep-rostos'), dc = q('#dep-cont'), di = 0;
+  deps.forEach(function(d, i){
+    var li = document.createElement('li');
+    li.innerHTML = '<button type="button" aria-label="Depoimento de ' + d.n + '"><img src="img/' + d.f + '.webp" alt=""></button>';
+    li.firstChild.addEventListener('click', function(){ mostrar(i); });
+    rostos.appendChild(li);
+  });
+  function pintar(i){
+    var d = deps[i];
+    dq.textContent = d.t;
+    da.innerHTML = '<img src="img/' + d.f + '.webp" alt="' + d.a + '"><div><b>' + d.n + '</b><span>' + d.c + '</span><small>' + d.d + '</small></div>';
+    dc.textContent = String(i + 1).padStart(2, '0') + ' / 05';
+    qa('button', rostos).forEach(function(b, k){ b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+  }
+  var pilhaApi = null;
+  function mostrar(i){
+    i = (i + deps.length) % deps.length;
+    if(pilhaApi){ pilhaApi.ir(i); return; }
+    if(i === di && dq.textContent) return;
+    di = i;
+    if(reduzido || !window.gsap){ pintar(i); return; }
+    gsap.to([dq, da], { opacity: 0, y: -16, duration: .3, ease: 'power2.in', onComplete: function(){
+      pintar(i);
+      gsap.fromTo([dq, da], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out', stagger: .08 });
+    }});
+  }
+  pintar(0);
+  window.__dep = { deps: deps, pintar: pintar, set: function(api){ pilhaApi = api; }, di: function(v){ if(v !== undefined) di = v; return di; } };
+  q('#dep-ant').addEventListener('click', function(){ mostrar(di - 1); });
+  q('#dep-prox').addEventListener('click', function(){ mostrar(di + 1); });
+  q('#form').addEventListener('submit', function(e){ e.preventDefault(); });
+
+  if(!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  var raiz = document.documentElement, cab = q('#cab'), ceu = q('.ceu'), video = q('#video');
+
+  if(!reduzido){ video.preload = 'auto'; var tentar = video.play(); if(tentar && tentar.catch) tentar.catch(function(){}); }
+
+  /* cabeçalho */
+  ScrollTrigger.create({ start: 60, end: 'max', onToggle: function(s){ cab.classList.toggle('solido', s.isActive); } });
+
+  var mm = gsap.matchMedia();
+  mm.add({ todos: 'all', desk: '(min-width: 900px)', reduz: '(prefers-reduced-motion: reduce)', fino: '(hover: hover) and (pointer: fine)' }, function(ctx){
+    var c = ctx.conditions, mov = !c.reduz, pino = c.desk && mov;
+    raiz.classList.toggle('anima', mov);
+    raiz.classList.toggle('pino', pino);
+    raiz.classList.toggle('movel', !c.desk);
+    var corAtual = '#F4EEE6', desfazFl = null;
+    gsap.set(ceu, { backgroundColor: corAtual });
+    function ceuPara(alvo, cor, ini, fim){
+      gsap.fromTo(ceu, { backgroundColor: corAtual }, { backgroundColor: cor, ease: 'none', immediateRender: false,
+        scrollTrigger: { trigger: alvo, start: ini || 'top 70%', end: fim || 'top 15%', scrub: true } });
+      corAtual = cor;
+    }
+
+    /* HERO */
+    if(mov){
+      gsap.from('.hero .pi', { yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: .06, delay: .15 });
+      gsap.from(['.hero-sub', '.hero-acoes'], { y: 24, opacity: 0, duration: 1, ease: 'power3.out', stagger: .1, delay: .6 });
+      gsap.to('#hero-midia', { scale: 1.12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.to('#hero-txt', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: '20% top', end: '80% top', scrub: true } });
+    }
+
+    /* 01 MANIFESTO: palavras acendem */
+    if(mov){
+      var pals = qa('.mani-grande .pal');
+      gsap.set(pals, { opacity: .13 });
+      gsap.to(pals, { opacity: 1, ease: 'none', stagger: .1,
+        scrollTrigger: pino ? { trigger: '.mani-texto', start: 'top top', end: '+=130%', pin: true, scrub: true }
+                            : { trigger: '.mani-grande', start: 'top 80%', end: 'bottom 45%', scrub: true } });
+
+      /* a janela se abre */
+      var tj = gsap.timeline({ scrollTrigger: { trigger: '#expande', start: 'top top', end: '+=150%', pin: true, scrub: 1 } });
+      tj.fromTo('.expande-img', { clipPath: c.desk ? 'inset(25% 37% 25% 37% round 22px)' : 'inset(24% 16% 30% 16% round 20px)' },
+                               { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'power1.inOut', duration: 1 }, 0)
+        .fromTo('.expande-img img', { scale: 1.3 }, { scale: 1, ease: 'power1.inOut', duration: 1 }, 0)
+        .fromTo('.expande-veu', { opacity: 0 }, { opacity: 1, duration: .3 }, .75)
+        .fromTo('.en', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .3, stagger: .08 }, .85)
+        .to({}, { duration: .25 });
+      if(pino){
+        tj.fromTo('.exp-l', { x: 0, opacity: 1 }, { x: '-22vw', opacity: 0, ease: 'power1.in', duration: .6 }, 0)
+          .fromTo('.exp-r', { x: 0, opacity: 1 }, { x: '22vw', opacity: 0, ease: 'power1.in', duration: .6 }, 0);
+      }
+    }
+
+    /* 02 PROJETOS */
+    ceuPara('#projetos', '#E8DED0', 'top 90%', 'top 30%');
+    if(pino){
+      var trilho = q('#proj-trilho');
+      var dist = function(){ return trilho.scrollWidth - window.innerWidth; };
+      var casas = qa('.casa'), cont = q('#proj-cont'), linha = q('#proj-linha');
+      var tw = gsap.to(trilho, { x: function(){ return -dist(); }, ease: 'none',
+        scrollTrigger: { trigger: '#projetos', start: 'top top', end: function(){ return '+=' + dist(); }, pin: true, scrub: 1, invalidateOnRefresh: true,
+          onUpdate: function(s){ linha.style.transform = 'scaleX(' + s.progress.toFixed(3) + ')'; } } });
+      casas.forEach(function(casa, i){
+        gsap.fromTo(q('img', casa), { xPercent: -6 }, { xPercent: 6, ease: 'none',
+          scrollTrigger: { trigger: casa, containerAnimation: tw, start: 'left right', end: 'right left', scrub: true } });
+        gsap.from(q('.casa-nome h3', casa), { yPercent: 40, opacity: 0, ease: 'power2.out',
+          scrollTrigger: { trigger: casa, containerAnimation: tw, start: 'left 85%', end: 'left 45%', scrub: true } });
+        ScrollTrigger.create({ trigger: casa, containerAnimation: tw, start: 'left center', end: 'right center',
+          onToggle: function(s){ if(s.isActive) cont.textContent = '0' + (i + 1) + ' / 03'; } });
+      });
+    }
+
+    /* 03 POR QUE NÓS */
+    if(mov){
+      qa('.pq-item').forEach(function(it){
+        var st = { trigger: it, start: 'top 85%' };
+        gsap.from(q('h3', it), { yPercent: 105, duration: 1, ease: 'power4.out', scrollTrigger: st });
+        gsap.from([q('.tag', it), q('p', it)], { y: 20, opacity: 0, duration: .9, ease: 'power3.out', stagger: .08, scrollTrigger: st });
+      });
+    }
+    if(pino && c.fino){
+      var fl = q('#flutua'), imgs = qa('img', fl);
+      gsap.set(fl, { xPercent: -50, yPercent: -50, scale: .6, autoAlpha: 0 });
+      var xTo = gsap.quickTo(fl, 'x', { duration: .7, ease: 'power3' }), yTo = gsap.quickTo(fl, 'y', { duration: .7, ease: 'power3' });
+      var lista = q('#pq-lista');
+      var mover = function(e){ xTo(e.clientX + 40); yTo(e.clientY); };
+      var sair = function(){ gsap.to(fl, { autoAlpha: 0, scale: .6, duration: .35, ease: 'power2.in' }); };
+      lista.addEventListener('pointermove', mover);
+      lista.addEventListener('pointerleave', sair);
+      var entrar = qa('.pq-item').map(function(it){
+        var f = function(){
+          imgs.forEach(function(im, k){ im.classList.toggle('on', String(k) === it.dataset.img); });
+          gsap.to(fl, { autoAlpha: 1, scale: 1, rotate: gsap.utils.random(-5, 5), duration: .5, ease: 'power3.out' });
+        };
+        it.addEventListener('pointerenter', f);
+        return [it, f];
+      });
+      desfazFl = function(){
+        lista.removeEventListener('pointermove', mover); lista.removeEventListener('pointerleave', sair);
+        entrar.forEach(function(p){ p[0].removeEventListener('pointerenter', p[1]); });
+      };
+    }
+
+    /* 04 PROCESSO */
+    ceuPara('#processo', '#EAD6BC', 'top 80%', 'top 20%');
+    var etapas = qa('.etapa'), marcas = qa('#proc-marcas li');
+    if(pino){
+      var figs = etapas.map(function(e){ return q('.etapa-fig', e); });
+      var txts = etapas.map(function(e){ return q('.etapa-txt', e); });
+      var tp = gsap.timeline({ scrollTrigger: { trigger: '#processo', start: 'top top', end: '+=420%', pin: true, scrub: 1,
+        onUpdate: function(s){
+          var t = tp.time();
+          marcas.forEach(function(m, k){
+            var f = Math.max(0, Math.min(1, t - (k - 1) - .1));
+            m.style.setProperty('--f', k === 0 ? 1 : f.toFixed(3));
+            m.classList.toggle('on', k === 0 || t > k - .45);
+          });
+        } } });
+      gsap.set(txts.slice(1), { autoAlpha: 0 });
+      for(var i = 1; i < etapas.length; i++){
+        var p = i - 1;
+        tp.fromTo(figs[i], { clipPath: 'inset(0% 100% 0% 0% round 24px)' }, { clipPath: 'inset(0% 0% 0% 0% round 24px)', duration: 1, ease: 'power2.inOut' }, p)
+          .fromTo(q('img,svg', figs[i]), { scale: 1.15 }, { scale: 1, duration: 1, ease: 'power2.out' }, p)
+          .to(txts[i - 1], { autoAlpha: 0, y: -40, duration: .35, ease: 'power2.in' }, p + .2)
+          .fromTo(txts[i], { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out' }, p + .55);
+      }
+      tp.to({}, { duration: .5 });
+    }
+
+    /* 05 DEPOIMENTOS: o dia termina */
+    ceuPara('#depoimentos', '#1C1724', 'top 85%', 'top 25%');
+    ScrollTrigger.create({ trigger: '#depoimentos', start: 'top 72px', endTrigger: '.rod', end: 'bottom top',
+      onToggle: function(s){ cab.classList.toggle('escuro', s.isActive); } });
+    if(mov){
+      gsap.to('.bruma span', { xPercent: function(k){ return k % 2 ? -30 : 30; }, ease: 'none', scrollTrigger: { trigger: '#depoimentos', start: 'top bottom', end: 'bottom top', scrub: true } });
+      gsap.from('.dep-topo > *', { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: .1, scrollTrigger: { trigger: '#depoimentos', start: 'top 60%' } });
+
+      /* 06 + rodapé */
+      gsap.from('.ct h2', { y: 40, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '#contato', start: 'top 70%' } });
+      gsap.from('.form', { y: 60, opacity: 0, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: '.form', start: 'top 85%' } });
+      gsap.from('#rod-marca', { yPercent: 100, duration: 1.4, ease: 'power4.out', scrollTrigger: { trigger: '.rod-marca', start: 'top 95%' } });
+    }
+
+    var desfazCel = !c.desk ? celular(ctx, mov) : null;
+    return function(){ if(desfazCel) desfazCel(); if(desfazFl) desfazFl(); raiz.classList.remove('anima', 'pino', 'movel'); };
+  });
+
+
+  /* ================= CELULAR ================= */
+  function vibrar(ms){ try{ if(navigator.userActivation && !navigator.userActivation.hasBeenActive) return; if(navigator.vibrate) navigator.vibrate(ms || 8); }catch(e){} }
+  function celular(ctx, mov){
+    var limpar = [];
+    function ouvir(el, ev, fn, op){ el.addEventListener(ev, fn, op); limpar.push(function(){ el.removeEventListener(ev, fn, op); }); }
+
+    /* cabeçalho some ao descer */
+    ScrollTrigger.create({ start: 0, end: 'max', onUpdate: function(s){
+      if(s.direction === 1 && s.scroll() > 240) cab.classList.add('some');
+      else if(s.direction === -1) cab.classList.remove('some');
+    } });
+    limpar.push(function(){ cab.classList.remove('some'); });
+
+    /* barra de ação: do manifesto até o contato */
+    var barra = q('#barra-acao');
+    ScrollTrigger.create({ trigger: '#manifesto', start: 'top 40%', endTrigger: '#contato', end: 'top 85%',
+      onToggle: function(s){ barra.classList.toggle('ver', s.isActive); } });
+    limpar.push(function(){ barra.classList.remove('ver'); });
+
+    /* 02 · carrossel + folha */
+    var casasEl = q('#casas'), segs = qa('#proj-seg i'), casas = qa('.casa');
+    var segAtual = 0;
+    function seg(){
+      var max = casasEl.scrollWidth - casasEl.clientWidth;
+      var p = max > 0 ? casasEl.scrollLeft / max * (casas.length - 1) : 0;
+      segs.forEach(function(s, i){ s.style.setProperty('--f', Math.max(0, Math.min(1, p + 1 - i)).toFixed(3)); });
+      var r = Math.round(p); if(r !== segAtual){ segAtual = r; vibrar(6); }
+    }
+    ouvir(casasEl, 'scroll', seg, { passive: true }); seg();
+    /* arrastar com o mouse (janela estreita no computador) */
+    var arr = null, semClique = false;
+    ouvir(casasEl, 'pointerdown', function(e){ if(e.pointerType !== 'mouse') return; arr = { x: e.clientX, s: casasEl.scrollLeft, m: false }; casasEl.style.scrollSnapType = 'none'; });
+    ouvir(window, 'pointermove', function(e){ if(!arr) return; var d = e.clientX - arr.x; if(Math.abs(d) > 5) arr.m = true; casasEl.scrollLeft = arr.s - d; });
+    ouvir(window, 'pointerup', function(){
+      if(!arr) return; var moveu = arr.m; arr = null;
+      var alvo = 0, melhor = Infinity, base = casasEl.getBoundingClientRect().left;
+      casas.forEach(function(c){ var d = Math.abs(c.getBoundingClientRect().left - base - 20); if(d < melhor){ melhor = d; alvo = c; } });
+      var max = casasEl.scrollWidth - casasEl.clientWidth;
+      casasEl.scrollTo({ left: Math.min(max, casasEl.scrollLeft + alvo.getBoundingClientRect().left - base - 20), behavior: mov ? 'smooth' : 'auto' });
+      setTimeout(function(){ casasEl.style.scrollSnapType = ''; }, 450);
+      if(moveu){ semClique = true; setTimeout(function(){ semClique = false; }, 60); }
+    });
+
+    var folha = q('#folha'), painel = q('#folha-painel'), ultimoFoco = null;
+    function abrir(casa){
+      var img = q('.casa-foto img', casa);
+      q('#folha-img').src = img.getAttribute('src'); q('#folha-img').alt = img.alt;
+      q('#folha-t').innerHTML = q('.casa-nome h3', casa).innerHTML;
+      q('#folha-local').textContent = q('.casa-nome span', casa).textContent;
+      q('#folha-area').innerHTML = q('.casa-area', casa).innerHTML;
+      q('#folha-p').textContent = q('.casa-info p', casa).textContent;
+      q('#folha-etq').innerHTML = q('.casa-info .etq', casa).innerHTML;
+      ultimoFoco = document.activeElement;
+      folha.hidden = false; painel.scrollTop = 0; painel.style.transform = '';
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ folha.classList.add('aberta'); }); });
+      document.documentElement.style.overflow = 'hidden';
+      vibrar(10);
+      setTimeout(function(){ q('.folha-x').focus({ preventScroll: true }); }, 60);
+    }
+    function fechar(){
+      if(folha.hidden) return;
+      folha.classList.remove('aberta'); painel.style.transform = '';
+      document.documentElement.style.overflow = '';
+      setTimeout(function(){ folha.hidden = true; }, mov ? 520 : 0);
+      if(ultimoFoco) ultimoFoco.focus({ preventScroll: true });
+    }
+    casas.forEach(function(casa){
+      var b = q('.casa-abrir', casa);
+      b.setAttribute('aria-label', 'Ver detalhes de ' + q('.casa-nome h3', casa).textContent);
+      ouvir(b, 'click', function(){ if(!semClique) abrir(casa); });
+    });
+    qa('[data-fechar]', folha).forEach(function(el){ ouvir(el, 'click', fechar); });
+    ouvir(document, 'keydown', function(e){ if(e.key === 'Escape') fechar(); });
+    /* arrastar a folha para baixo para fechar */
+    var y0 = null, dy = 0;
+    ouvir(painel, 'touchstart', function(e){ if(painel.scrollTop > 0) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+    ouvir(painel, 'touchmove', function(e){ if(y0 === null) return; dy = Math.max(0, e.touches[0].clientY - y0); if(dy > 0){ painel.classList.add('arrastando'); painel.style.transform = 'translateY(' + dy + 'px)'; } }, { passive: true });
+    ouvir(painel, 'touchend', function(){ if(y0 === null) return; painel.classList.remove('arrastando'); if(dy > 110) fechar(); else painel.style.transform = ''; y0 = null; });
+    limpar.push(function(){ folha.classList.remove('aberta'); folha.hidden = true; document.documentElement.style.overflow = ''; });
+
+    /* 03 · cartões que se empilham: o de trás encolhe */
+    var itens = qa('.pq-item');
+    if(mov){
+      itens.forEach(function(it, i){
+        if(i === itens.length - 1) return;
+        gsap.to(it, { scale: .93, filter: 'brightness(.86)', ease: 'none',
+          scrollTrigger: { trigger: itens[i + 1], start: 'top 62%', end: 'top ' + (84 + (i + 1) * 18) + 'px', scrub: true } });
+      });
+    }
+
+    /* 04 · palco fixo com as etapas */
+    var ol = q('#proc-etapas'), etapas = qa('.etapa'), palco = document.createElement('div');
+    palco.className = 'proc-palco'; palco.setAttribute('aria-hidden', 'true');
+    etapas.forEach(function(e){ palco.appendChild(q('.etapa-fig', e).cloneNode(true)); });
+    var pontos = document.createElement('div'); pontos.className = 'proc-pontos';
+    etapas.forEach(function(){ pontos.appendChild(document.createElement('i')); });
+    palco.appendChild(pontos);
+    ol.parentNode.insertBefore(palco, ol);
+    var figsP = qa('.etapa-fig', palco), pts = qa('i', pontos), atual = -1;
+    function ativar(i){
+      if(i === atual) return; atual = i;
+      figsP.forEach(function(f, k){ f.classList.toggle('on', k <= i); });
+      pts.forEach(function(p, k){ p.classList.toggle('on', k === i); });
+      etapas.forEach(function(e, k){ e.classList.toggle('ativa', k === i); });
+      vibrar(8);
+    }
+    etapas.forEach(function(e, i){
+      ScrollTrigger.create({ trigger: e, start: 'top 72%', end: 'bottom 72%', onToggle: function(s){ if(s.isActive) ativar(i); } });
+    });
+    ativar(0);
+    limpar.push(function(){ palco.remove(); etapas.forEach(function(e){ e.classList.remove('ativa'); }); });
+
+    /* 05 · pilha de depoimentos */
+    var D = window.__dep, pilha = q('#dep-pilha'), ordem = D.deps.map(function(_, i){ return i; }), cards = [];
+    D.deps.forEach(function(d){
+      var c = document.createElement('figure'); c.className = 'dp-card';
+      c.innerHTML = '<blockquote>' + d.t + '</blockquote><figcaption class="dp-autor"><img src="img/' + d.f + '.webp" alt=""><div><b>' + d.n + '</b><span>' + d.c + '</span></div></figcaption>';
+      pilha.appendChild(c); cards.push(c);
+    });
+    function arrumar(anima){
+      ordem.forEach(function(idx, k){
+        var v = { x: 0, y: k * 14, scale: 1 - k * .05, rotate: 0, opacity: k > 2 ? 0 : 1, zIndex: 10 - k };
+        if(anima && mov) gsap.to(cards[idx], Object.assign({ duration: .5, ease: 'power3.out' }, v)); else gsap.set(cards[idx], v);
+      });
+      D.di(ordem[0]); D.pintar(ordem[0]);
+    }
+    function lancar(dir){
+      var topo = cards[ordem[0]];
+      vibrar(12);
+      var fim = function(){ ordem.push(ordem.shift()); gsap.set(topo, { x: 0, rotate: 0, opacity: 0 }); arrumar(true); };
+      if(mov) gsap.to(topo, { x: dir * window.innerWidth * 1.1, rotate: dir * 16, duration: .4, ease: 'power2.in', onComplete: fim }); else fim();
+    }
+    function voltar(){
+      ordem.unshift(ordem.pop());
+      var c = cards[ordem[0]];
+      if(mov) gsap.set(c, { x: -window.innerWidth, rotate: -14, opacity: 1, zIndex: 11 });
+      arrumar(true); vibrar(8);
+    }
+    D.set({ ir: function(i){
+      if(i === ordem[1]) return lancar(-1);
+      if(i === ordem[ordem.length - 1]) return voltar();
+      while(ordem[0] !== i) ordem.push(ordem.shift());
+      arrumar(true);
+    } });
+    limpar.push(function(){ D.set(null); pilha.innerHTML = ''; });
+    arrumar(false);
+    /* arrastar o cartão de cima */
+    var px = null, py = 0, dx = 0, horiz = false;
+    ouvir(pilha, 'pointerdown', function(e){ if(!e.target.closest('.dp-card') || e.target.closest('.dp-card') !== cards[ordem[0]]) return; px = e.clientX; py = e.clientY; dx = 0; horiz = false; });
+    ouvir(window, 'pointermove', function(e){
+      if(px === null) return;
+      dx = e.clientX - px;
+      if(!horiz && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - py)) horiz = true;
+      if(horiz) gsap.set(cards[ordem[0]], { x: dx, rotate: dx * .05 });
+    });
+    function soltar(){
+      if(px === null) return; px = null;
+      if(!horiz) return;
+      if(Math.abs(dx) > 90) lancar(dx > 0 ? 1 : -1);
+      else gsap.to(cards[ordem[0]], { x: 0, rotate: 0, duration: .5, ease: 'back.out(1.6)' });
+    }
+    ouvir(window, 'pointerup', soltar); ouvir(window, 'pointercancel', soltar);
+
+    /* 06 · formulário em passos */
+    var form = q('#form'), grupo = q('.grupo', form), passos = Array.prototype.slice.call(grupo.children), n = passos.length, pa = 0;
+    var topo = document.createElement('div'); topo.className = 'passo-topo';
+    topo.innerHTML = '<div class="passo-linha"><span class="passo-txt"></span><button type="button" class="passo-voltar">← Voltar</button></div><div class="passo-barra"><i></i></div>';
+    form.insertBefore(topo, form.firstChild); form.classList.add('passos');
+    var txt = q('.passo-txt', topo), volt = q('.passo-voltar', topo), barraP = q('.passo-barra i', topo);
+    function irPasso(k){
+      pa = Math.max(0, Math.min(n - 1, k));
+      passos.forEach(function(p, i){ p.classList.toggle('fora', i !== pa); });
+      form.classList.toggle('fim', pa === n - 1);
+      txt.textContent = 'Passo ' + (pa + 1) + ' de ' + n;
+      volt.disabled = pa === 0;
+      barraP.style.transform = 'scaleX(' + ((pa + 1) / n) + ')';
+    }
+    ouvir(volt, 'click', function(){ irPasso(pa - 1); });
+    ouvir(form, 'click', function(e){
+      if(e.target.type === 'radio' && passos[pa].contains(e.target)){ vibrar(8); setTimeout(function(){ irPasso(pa + 1); }, mov ? 320 : 0); }
+    });
+    irPasso(0);
+    limpar.push(function(){ topo.remove(); form.classList.remove('passos', 'fim'); passos.forEach(function(p){ p.classList.remove('fora'); }); });
+
+    return function(){ limpar.forEach(function(f){ f(); }); };
+  }
+
+  window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+})();
+</script>
