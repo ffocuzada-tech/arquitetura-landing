@@ -21,6 +21,7 @@ body {
   background: var(--color-nevoa);
   color: var(--color-carvao);
   font-family: var(--font-texto);
+  overflow-x: hidden;
 }
 
 a:focus-visible,

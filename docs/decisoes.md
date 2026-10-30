@@ -42,3 +42,7 @@
 | D34 | 29/10/2026 | GSAP só pelo pacote `gsap` (ScrollTrigger e SplitText incluídos); limpeza das animações com `gsap.matchMedia()` e `revert()` no `useEffect`, sem `@gsap/react` | Mesmo resultado com um pacote a menos; o `matchMedia` também cuida do reduced motion |
 | D35 | 29/10/2026 | Ícones do "Por que nós" desenhados em SVG próprio, sem biblioteca | Traço fino no estilo do logo |
 | D36 | 29/10/2026 | No celular, escurecimento no pé do vídeo do hero e "Ver projetos →" / "Role para conhecer" em Névoa | Legibilidade sobre a parte escura da foto (Q2) |
+| D37 | 29/10/2026 | Depoimentos com rolagem horizontal nativa (scroll-snap) e um componente para setas, contador e barra, sem biblioteca | Nenhum pacote novo; arrastar no celular funciona naturalmente |
+| D38 | 29/10/2026 | "Prefiro que me liguem" envia para `/api/contato`, rota criada só no PR 4; até lá mostra a mensagem de erro aprovada | O envio depende do Gmail do projeto (PR 4) |
+| D39 | 29/10/2026 | Os dois botões do formulário exigem as 3 escolhas, o nome e o WhatsApp | Mensagem sempre completa; mesmas regras nos dois caminhos |
+| D40 | 29/10/2026 | Campo WhatsApp formatado ao digitar como (27) 9 0000-0000, válido com 10 ou 11 dígitos, sem biblioteca | Facilita o preenchimento e garante o DDD |
