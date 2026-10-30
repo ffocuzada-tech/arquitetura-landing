@@ -1,0 +1,40 @@
+# Decisões — Estúdio Vazio
+
+> Uma linha por decisão. Nunca apagar. Se uma decisão mudar,
+> adicionar uma nova linha indicando qual ela substitui.
+> Decisões tomadas no planejamento (28 e 29/10/2026); detalhes em `docs/spec.md`.
+
+| # | Data | Decisão | Motivo |
+|---|---|---|---|
+| D1 | 28/10/2026 | Estúdio Vazio: casas de madeira e vidro para quem já tem terreno na região de Pedra Azul; escritório em Vitória | Público médio/alto padrão que busca confiança para construir |
+| D2 | 28/10/2026 | Ação principal "Agendar reunião" abre o WhatsApp com mensagem pronta; formulário como alternativa | Caminho mais curto até a conversa |
+| D3 | 29/10/2026 | Hero com vídeo em loop (`public/videos/hero-loop.mp4`) e imagem parada enquanto carrega e para quem desativa animações | Prender a atenção sem pesar para quem não quer movimento |
+| D4 | 29/10/2026 | Efeitos com GSAP + ScrollTrigger; 3D/WebGL fica para o futuro | Bom resultado com custo e risco baixos |
+| D5 | 29/10/2026 | Pasta `public/videos/` como exceção à estrutura padrão | Separar vídeo de imagens |
+| D6 | 29/10/2026 | Paleta de 9 cores tirada das imagens aprovadas; Pedra nunca como texto | Coerência com as fotos; contraste (WCAG) |
+| D7 | 29/10/2026 | Fontes Newsreader + Hanken Grotesk + IBM Plex Mono | Serifa leve traz o calor da madeira e o tom de casa |
+| D8 | 29/10/2026 | Logo "Canto aberto" + "Estúdio *Vazio*"; SVGs com texto em contorno | Lido como planta de arquitetura e funciona no favicon |
+| D9 | 29/10/2026 | Ritmo de fundos Névoa/Linho com faixa Crepúsculo só nos depoimentos | Separar seções sem linhas e destacar a prova social |
+| D10 | 29/10/2026 | Celular sem menu sanduíche: só logo + "Agendar" | Página curta, três links |
+| D11 | 29/10/2026 | 5 depoimentos em cartões deslizantes, sem passagem automática (substitui "1 ou 2 depoimentos") | Mais prova social sem alongar a página |
+| D12 | 29/10/2026 | Subpasta `public/images/depoimentos/` | Retratos são de clientes, não da equipe |
+| D13 | 29/10/2026 | Seção 06 com fundo Linho liso e miniatura como maquete com sombra (substitui o fundo de pôr do sol) | Fundo mais calmo, reforça a ideia de maquete |
+| D14 | 29/10/2026 | Miniatura flutua e inclina de leve (substitui "flutua e gira") | Imagem 2D não gira de verdade |
+| D15 | 29/10/2026 | Imagem do pôr do sol fora do site por enquanto | Será testada em outro local com o site rodando |
+| D16 | 29/10/2026 | Sem botão flutuante de WhatsApp | O cabeçalho fixo já mostra "Agendar" |
+| D17 | 29/10/2026 | Sem banner de cookies, desde que o site não use rastreamento | Não há cookies a autorizar |
+| D18 | 29/10/2026 | Formulário: "Prefiro que me liguem" envia por e-mail ao escritório (substitui "Prefiro enviar por e-mail") | A pessoa não informa e-mail; o escritório retorna por telefone |
+| D19 | 29/10/2026 | Rodapé sem endereço e sem coluna de redes sociais | Endereço fictício pode coincidir com um real; não existe Instagram do estúdio |
+| D20 | 29/10/2026 | CAU em formato fictício: "CAU A000000-0" | Portfólio com empresa fictícia |
+| D21 | 29/10/2026 | Âncoras `#inicio`, `#manifesto`, `#projetos`, `#por-que-nos`, `#processo`, `#depoimentos`, `#contato` | Navegação do menu e do "Ver projetos →" |
+| D22 | 29/10/2026 | `favicon.svg` vira `src/app/icon.svg`; `favicon.ico` e `apple-icon.png` em `src/app/` | O Next.js reconhece esses arquivos sozinho |
+| D23 | 29/10/2026 | Divisão dos PRs conforme `docs/spec.md`, parte 9 | Uma etapa por PR, do esqueleto à publicação |
+| D24 | 29/10/2026 | Exceção à regra G1: só o projeto recém-criado pelo `create-next-app` (Next.js 16.4.3), sem alterações, foi direto para a `main` | O PR 1 mostra só o trabalho real e a Vercel já sobe com um site funcionando |
+| D25 | 29/10/2026 | PR 1 dividido em 3 prompts (1A projeto · 1B docs e leitura das skills · 1C estrutura e PR) | Paradas obrigatórias: conexão da Vercel e leitura das skills (S5) |
+| D26 | 29/10/2026 | `AGENTS.md` criado pelo Next.js é mantido e citado no `CLAUDE.md` (item 5) | O Next.js 16 é mais novo que o conhecimento do Claude Code; a documentação instalada evita código desatualizado |
+| D27 | 29/10/2026 | frontend-design e webapp-testing instaladas pelo `npx skills add` | Lidas antes (S5); a primeira é só texto, a segunda roda só comandos locais |
+| D28 | 29/10/2026 | UI/UX Pro Max pelo `npx ui-ux-pro-max-cli init --ai claude`, dentro do repositório, sem token e sem usar o gerador de design system (substitui o `uipro-cli` da Base) | O `uipro-cli` está desatualizado; paleta e fontes já aprovadas |
+| D29 | 29/10/2026 | Coleta de dados de uso do pacote `skills` desligada; `.claude/settings.local.json` fora do GitHub | Projeto sem rastreamento; configuração pessoal não vai para o repositório |
+| D30 | 29/10/2026 | Site sem modo escuro automático | Cada seção tem o fundo definido na identidade aprovada |
+| D31 | 29/10/2026 | Skills como pastas reais só em `.claude/skills/`, sem `.agents/`, sem links e sem `skills-lock.json` | Atalhos não funcionam bem no Git do Windows; as skills são só para o Claude Code |
+| D32 | 29/10/2026 | Das 7 skills instaladas pelo `ui-ux-pro-max-cli`, fica só a `ui-ux-pro-max`; as 6 extras (banner-design, brand, design, design-system, slides, ui-styling) foram removidas | O Claude Code escolhe skills pela descrição; skills de marca e design system poderiam propor mudanças na identidade já aprovada |
