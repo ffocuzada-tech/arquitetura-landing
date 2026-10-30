@@ -18,9 +18,12 @@ export default function Cabecalho() {
   const [oculto, setOculto] = useState(false);
 
   useEffect(() => {
+    // refreshPriority negativo: recalcula depois dos ScrollTriggers com pin (Manifesto),
+    // que crescem a altura da página e por isso precisam ser medidos primeiro (D71)
     const gatilhoSolido = ScrollTrigger.create({
       start: 60,
       end: "max",
+      refreshPriority: -1,
       onToggle: (self) => setSolido(self.isActive),
     });
 
@@ -29,6 +32,7 @@ export default function Cabecalho() {
       start: "top 72px",
       endTrigger: "footer",
       end: "bottom top",
+      refreshPriority: -1,
       onToggle: (self) => setEscuro(self.isActive),
     });
 
@@ -64,7 +68,7 @@ export default function Cabecalho() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-[70] transition-[background-color,box-shadow,transform] duration-500 ${
+      className={`fixed inset-x-0 top-0 z-[70] transition-[background-color,box-shadow,translate] duration-500 ${
         oculto ? "-translate-y-[120%]" : "translate-y-0"
       } ${
         escuro

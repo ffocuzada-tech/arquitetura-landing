@@ -32,14 +32,11 @@ export function useModo() {
     function atualizar() {
       ScrollTrigger.refresh();
     }
-    // duplo rAF: espera o commit de todos os ScrollTriggers com pin (D71) antes do primeiro refresh
-    const quadro = requestAnimationFrame(() => requestAnimationFrame(atualizar));
     window.addEventListener("load", atualizar);
     document.fonts?.ready.then(atualizar);
 
     return () => {
       mm.revert();
-      cancelAnimationFrame(quadro);
       window.removeEventListener("load", atualizar);
     };
   }, []);

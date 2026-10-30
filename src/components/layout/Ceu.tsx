@@ -24,7 +24,9 @@ export default function Ceu() {
             backgroundColor: cor,
             ease: "none",
             immediateRender: false,
-            scrollTrigger: { trigger: gatilho, start: inicio, end: fim, scrub: true },
+            // refreshPriority negativo: recalcula depois dos ScrollTriggers com pin do
+            // Manifesto, que vêm antes na página e crescem a altura do documento (D71)
+            scrollTrigger: { trigger: gatilho, start: inicio, end: fim, scrub: true, refreshPriority: -1 },
           },
         );
         corAtual = cor;
