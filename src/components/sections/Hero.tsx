@@ -4,7 +4,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Container from "@/components/ui/Container";
 import { MENSAGEM_AGENDAR_REUNIAO, linkWhatsapp } from "@/lib/contato";
-import { gsap, SplitText } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 
 function inscreverMovimentoReduzido(callback: () => void) {
   const consulta = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -20,9 +20,18 @@ function lerMovimentoPermitidoServidor() {
   return false;
 }
 
+const titulo = "A casa que a serra estava esperando.";
+const palavrasTitulo = titulo.split(" ");
+const ultimaPalavra = palavrasTitulo.length - 1;
+
 export default function Hero() {
-  const tituloRef = useRef<HTMLHeadingElement>(null);
+  const secaoRef = useRef<HTMLElement>(null);
+  const midiaRef = useRef<HTMLDivElement>(null);
+  const textoRef = useRef<HTMLDivElement>(null);
   const subtituloRef = useRef<HTMLParagraphElement>(null);
+  const acoesRef = useRef<HTMLDivElement>(null);
+  const palavraRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
   const permiteVideo = useSyncExternalStore(
     inscreverMovimentoReduzido,
     lerMovimentoPermitido,
@@ -30,34 +39,42 @@ export default function Hero() {
   );
 
   useEffect(() => {
+    const secao = secaoRef.current;
+    if (!secao) return;
+
     const mm = gsap.matchMedia();
 
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const linhasTitulo = new SplitText(tituloRef.current, {
-        type: "lines",
-        linesClass: "overflow-hidden",
-      });
-      const linhasSubtitulo = new SplitText(subtituloRef.current, {
-        type: "lines",
-        linesClass: "overflow-hidden",
-      });
+    mm.add({ todos: "all", reduz: "(prefers-reduced-motion: reduce)" }, (contexto) => {
+      const { reduz } = contexto.conditions as { reduz: boolean };
+      if (reduz) return;
 
-      const tl = gsap.timeline({ delay: 0.3 });
-      tl.from(linhasTitulo.lines, {
+      gsap.from(palavraRefs.current, {
         yPercent: 110,
-        duration: 0.9,
+        duration: 1.1,
+        ease: "power4.out",
+        stagger: 0.06,
+        delay: 0.15,
+      });
+      gsap.from([subtituloRef.current, acoesRef.current], {
+        y: 24,
+        opacity: 0,
+        duration: 1,
         ease: "power3.out",
         stagger: 0.1,
-      }).from(
-        linhasSubtitulo.lines,
-        { yPercent: 110, duration: 0.7, ease: "power3.out", stagger: 0.08 },
-        "-=0.45",
-      );
+        delay: 0.6,
+      });
 
-      return () => {
-        linhasTitulo.revert();
-        linhasSubtitulo.revert();
-      };
+      gsap.to(midiaRef.current, {
+        scale: 1.12,
+        ease: "none",
+        scrollTrigger: { trigger: secao, start: "top top", end: "bottom top", scrub: true },
+      });
+      gsap.to(textoRef.current, {
+        yPercent: -40,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: { trigger: secao, start: "20% top", end: "80% top", scrub: true },
+      });
     });
 
     return () => mm.revert();
@@ -66,73 +83,120 @@ export default function Hero() {
   return (
     <section
       id="inicio"
+      ref={secaoRef}
       className="relative flex overflow-hidden bg-carvao"
-      style={{ minHeight: "max(100vh, 600px)" }}
+      style={{ minHeight: "max(100svh, 600px)" }}
     >
-      <Image
-        src="/images/hero/hero-poster.webp"
-        alt=""
-        fill
-        preload
-        className="object-cover [object-position:74%_center] md:[object-position:50%_center]"
+      <div ref={midiaRef} className="absolute inset-0 origin-[70%_60%]">
+        <Image
+          src="/images/hero/hero-poster.webp"
+          alt=""
+          fill
+          priority
+          className="object-cover [object-position:74%_center] min-[900px]:[object-position:60%_center]"
+        />
+        {permiteVideo && (
+          <video
+            className="absolute inset-0 h-full w-full object-cover [object-position:74%_center] min-[900px]:[object-position:60%_center]"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/images/hero/hero-poster.webp"
+            aria-hidden="true"
+          >
+            <source src="/videos/hero-loop.mp4" type="video/mp4" />
+          </video>
+        )}
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 min-[900px]:hidden"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(244,238,230,.9) 0%, rgba(244,238,230,.55) 34%, rgba(244,238,230,0) 58%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 hidden min-[900px]:block"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(244,238,230,.92) 0%, rgba(244,238,230,.6) 34%, rgba(244,238,230,0) 62%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-[-1px] h-[34vh]"
+        style={{
+          background: "linear-gradient(180deg, rgba(244,238,230,0), rgba(244,238,230,.75) 60%, var(--color-nevoa))",
+        }}
       />
 
-      {permiteVideo && (
-        <video
-          className="absolute inset-0 h-full w-full object-cover [object-position:74%_center] md:[object-position:50%_center]"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/hero/hero-poster.webp"
-          aria-hidden="true"
-        >
-          <source src="/videos/hero-loop.mp4" type="video/mp4" />
-        </video>
-      )}
-
-      <div className="absolute inset-0 hidden bg-gradient-to-r from-nevoa via-nevoa/35 to-transparent md:block" />
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-carvao/50 to-transparent" />
-      <div className="absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-nevoa via-nevoa/55 to-transparent md:hidden" />
-
-      <Container className="relative z-10 flex w-full flex-col self-stretch py-28 md:justify-center md:py-0">
-        <div className="max-w-xl">
+      <Container className="relative z-[2] flex w-full flex-col justify-between self-stretch pt-[120px] pb-10 min-[900px]:justify-center min-[900px]:pb-0">
+        <div ref={textoRef}>
           <h1
-            ref={tituloRef}
-            className="font-titulo text-4xl font-light leading-[1.1] text-carvao md:text-7xl"
+            aria-label={titulo}
+            className="max-w-[11ch] font-titulo font-light leading-[0.98] tracking-[-0.015em] text-carvao"
+            style={{ fontSize: "clamp(44px, 7.4vw, 112px)" }}
           >
-            A casa que a serra estava esperando.
+            {palavrasTitulo.map((palavra, i) => (
+              <span key={i} aria-hidden="true">
+                <span className="inline-block overflow-hidden pb-[0.08em] -mb-[0.08em] align-top">
+                  <span
+                    ref={(el) => {
+                      palavraRefs.current[i] = el;
+                    }}
+                    className={`inline-block ${i === ultimaPalavra ? "italic" : ""}`}
+                  >
+                    {palavra}
+                  </span>
+                </span>
+                {i < ultimaPalavra ? " " : ""}
+              </span>
+            ))}
           </h1>
           <p
             ref={subtituloRef}
-            className="mt-6 max-w-md font-texto text-base text-carvao md:text-lg"
+            className="mt-7 max-w-[38ch] font-texto text-base text-carvao min-[900px]:text-lg"
           >
             Projetamos casas de madeira e vidro para quem já tem um terreno na
             região de Pedra Azul e quer viver em meio à natureza.
           </p>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center gap-4 md:mt-8">
+        <div ref={acoesRef} className="mt-9 flex flex-wrap items-center gap-5 gap-x-7">
           <a
             href={linkWhatsapp(MENSAGEM_AGENDAR_REUNIAO)}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-[4px] bg-ambar px-6 py-3.5 font-texto text-sm font-medium text-carvao transition-colors hover:bg-ambar-escuro"
+            className="group inline-flex items-center gap-2.5 rounded-full bg-ambar px-[22px] py-3 font-texto text-sm font-medium text-carvao transition-colors hover:bg-ambar-escuro"
           >
             Agendar reunião
+            <span
+              aria-hidden="true"
+              className="grid h-[22px] w-[22px] place-items-center rounded-full bg-carvao/10 transition-transform duration-400 group-hover:-rotate-45 group-hover:translate-x-[3px]"
+            >
+              →
+            </span>
           </a>
           <a
             href="#projetos"
-            className="font-texto text-sm font-medium text-nevoa underline-offset-4 hover:underline md:text-carvao"
+            className="border-b border-current pb-0.5 font-texto text-[15px] font-medium text-nevoa min-[900px]:text-carvao"
           >
             Ver projetos →
           </a>
         </div>
-
-        <div className="mt-4 font-rotulo text-xs uppercase tracking-wide text-nevoa md:mt-0 md:absolute md:bottom-10 md:left-12 md:text-carvao">
-          Role para conhecer
-        </div>
       </Container>
+
+      <div className="absolute bottom-8 left-5 hidden items-center gap-3 font-rotulo text-xs uppercase tracking-wide text-carvao min-[900px]:left-12 min-[900px]:flex">
+        <span
+          aria-hidden="true"
+          className="block h-10 w-px origin-top bg-carvao [animation:pulso_2.4s_ease-in-out_infinite]"
+        />
+        Role para conhecer
+      </div>
     </section>
   );
 }
