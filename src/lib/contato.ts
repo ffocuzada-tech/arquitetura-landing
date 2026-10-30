@@ -33,8 +33,3 @@ export function formatarWhatsapp(entrada: string) {
   if (numero.length <= 4) return `(${ddd})${prefixo} ${numero}`;
   return `(${ddd})${prefixo} ${numero.slice(0, 4)}-${numero.slice(4, 8)}`;
 }
-
-export function whatsappValido(entrada: string) {
-  const digitos = entrada.replace(/\D/g, "").length;
-  return digitos === 10 || digitos === 11;
-}

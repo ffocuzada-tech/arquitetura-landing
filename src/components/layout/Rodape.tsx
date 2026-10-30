@@ -27,8 +27,11 @@ export default function Rodape() {
               <ul className="mt-4 space-y-2">
                 {/* Número do WhatsApp entra aqui quando o usuário criar (pendência) */}
                 <li>WhatsApp</li>
-                {/* E-mail do projeto entra aqui quando o usuário criar o Gmail (pendência) */}
-                <li>E-mail</li>
+                <li>
+                  <a href="mailto:estudiovazio.contato@gmail.com" className="hover:text-ambar">
+                    estudiovazio.contato@gmail.com
+                  </a>
+                </li>
               </ul>
             </div>
 

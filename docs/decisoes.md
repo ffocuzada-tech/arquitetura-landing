@@ -46,3 +46,8 @@
 | D38 | 29/10/2026 | "Prefiro que me liguem" envia para `/api/contato`, rota criada só no PR 4; até lá mostra a mensagem de erro aprovada | O envio depende do Gmail do projeto (PR 4) |
 | D39 | 29/10/2026 | Os dois botões do formulário exigem as 3 escolhas, o nome e o WhatsApp | Mensagem sempre completa; mesmas regras nos dois caminhos |
 | D40 | 29/10/2026 | Campo WhatsApp formatado ao digitar como (27) 9 0000-0000, válido com 10 ou 11 dígitos, sem biblioteca | Facilita o preenchimento e garante o DDD |
+| D41 | 30/10/2026 | Envio do formulário pelo Gmail do projeto com o pacote `nodemailer` e senha de app | Padrão para Gmail, sem serviço pago |
+| D42 | 30/10/2026 | Proteção contra robôs com campo invisível (honeypot), sem captcha | Sem serviço de terceiros e sem atrapalhar quem preenche |
+| D43 | 30/10/2026 | E-mail com assunto "Novo contato pelo site: {nome}", as respostas e um link para responder pelo WhatsApp; nada guardado no site | Resposta rápida pelo escritório; LGPD (S4) |
+| D44 | 30/10/2026 | Projeto duplicado `arquitetura-landing-f9pt` apagado na Vercel; fica só `arquitetura-landing` | Uma prévia por PR e variáveis de ambiente cadastradas uma vez só |
+| D45 | 30/10/2026 | Texto da política de privacidade aprovado (linguagem simples, LGPD) | Transparência sobre os dados do formulário |

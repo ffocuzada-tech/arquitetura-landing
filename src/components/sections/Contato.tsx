@@ -6,12 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Secao from "@/components/ui/Secao";
 import { gsap } from "@/lib/gsap";
+import { formatarWhatsapp, linkWhatsapp, montarMensagemContato } from "@/lib/contato";
 import {
-  formatarWhatsapp,
-  linkWhatsapp,
-  montarMensagemContato,
-  whatsappValido,
-} from "@/lib/contato";
+  VALORES_LOCAL,
+  VALORES_NECESSIDADE,
+  VALORES_TAMANHO,
+  validarContato,
+  type ErrosContato,
+} from "@/lib/validacao";
 
 type Pergunta = {
   id: "necessidade" | "local" | "tamanho";
@@ -19,39 +21,31 @@ type Pergunta = {
   opcoes: { valor: string; rotulo: string }[];
 };
 
+const rotulosNecessidade: Record<string, string> = {
+  projeto: "Projeto",
+  "projeto e obra": "Projeto + Obra",
+};
+
 const perguntas: Pergunta[] = [
   {
     id: "necessidade",
     pergunta: "O que você precisa?",
-    opcoes: [
-      { valor: "projeto", rotulo: "Projeto" },
-      { valor: "projeto e obra", rotulo: "Projeto + Obra" },
-    ],
+    opcoes: VALORES_NECESSIDADE.map((valor) => ({ valor, rotulo: rotulosNecessidade[valor] })),
   },
   {
     id: "local",
     pergunta: "Onde fica o terreno?",
-    opcoes: [
-      { valor: "Pedra Azul", rotulo: "Pedra Azul" },
-      { valor: "Domingos Martins", rotulo: "Domingos Martins" },
-      { valor: "Venda Nova do Imigrante", rotulo: "Venda Nova do Imigrante" },
-      { valor: "Marechal Floriano", rotulo: "Marechal Floriano" },
-      { valor: "Outro", rotulo: "Outro" },
-    ],
+    opcoes: VALORES_LOCAL.map((valor) => ({ valor, rotulo: valor })),
   },
   {
     id: "tamanho",
     pergunta: "Tamanho aproximado da casa",
-    opcoes: [
-      { valor: "até 100 m²", rotulo: "até 100 m²" },
-      { valor: "100 a 200 m²", rotulo: "100 a 200 m²" },
-      { valor: "mais de 200 m²", rotulo: "mais de 200 m²" },
-    ],
+    opcoes: VALORES_TAMANHO.map((valor) => ({ valor, rotulo: valor })),
   },
 ];
 
 type Escolhas = Record<Pergunta["id"], string>;
-type Erros = Partial<Record<Pergunta["id"] | "nome" | "whatsapp", string>>;
+type Erros = ErrosContato;
 
 function GrupoEscolha({
   pergunta,
@@ -109,6 +103,7 @@ export default function Contato() {
   });
   const [nome, setNome] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [site, setSite] = useState("");
   const [erros, setErros] = useState<Erros>({});
   const [enviando, setEnviando] = useState(false);
   const [mensagemEnvio, setMensagemEnvio] = useState<{ tipo: "sucesso" | "erro"; texto: string } | null>(
@@ -150,12 +145,13 @@ export default function Contato() {
   }
 
   function validar(): boolean {
-    const novosErros: Erros = {};
-    if (!escolhas.necessidade) novosErros.necessidade = "Escolha uma opção.";
-    if (!escolhas.local) novosErros.local = "Escolha uma opção.";
-    if (!escolhas.tamanho) novosErros.tamanho = "Escolha uma opção.";
-    if (!nome.trim()) novosErros.nome = "Informe seu nome.";
-    if (!whatsappValido(whatsapp)) novosErros.whatsapp = "Informe um WhatsApp com DDD.";
+    const novosErros = validarContato({
+      necessidade: escolhas.necessidade,
+      local: escolhas.local,
+      tamanho: escolhas.tamanho,
+      nome,
+      whatsapp,
+    });
 
     setErros(novosErros);
 
@@ -200,6 +196,7 @@ export default function Contato() {
           necessidade: escolhas.necessidade,
           local: escolhas.local,
           tamanho: escolhas.tamanho,
+          site,
         }),
       });
       if (!resposta.ok) throw new Error("Falha no envio");
@@ -319,6 +316,19 @@ export default function Contato() {
                   </p>
                 )}
               </div>
+            </div>
+
+            <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+              <label htmlFor="site">Não preencha este campo</label>
+              <input
+                id="site"
+                name="site"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={site}
+                onChange={(evento) => setSite(evento.target.value)}
+              />
             </div>
 
             <div className="mt-8 flex flex-col gap-3">
