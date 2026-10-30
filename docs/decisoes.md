@@ -38,3 +38,4 @@
 | D30 | 29/10/2026 | Site sem modo escuro automático | Cada seção tem o fundo definido na identidade aprovada |
 | D31 | 29/10/2026 | Skills como pastas reais só em `.claude/skills/`, sem `.agents/`, sem links e sem `skills-lock.json` | Atalhos não funcionam bem no Git do Windows; as skills são só para o Claude Code |
 | D32 | 29/10/2026 | Das 7 skills instaladas pelo `ui-ux-pro-max-cli`, fica só a `ui-ux-pro-max`; as 6 extras (banner-design, brand, design, design-system, slides, ui-styling) foram removidas | O Claude Code escolhe skills pela descrição; skills de marca e design system poderiam propor mudanças na identidade já aprovada |
+| D33 | 29/10/2026 | Pacote `gsap` instalado (inclui ScrollTrigger e SplitText) para os efeitos do PR 2 | Execução da escolha já registrada em D4; instalação de pacote é mudança estrutural (regra A2), autorizada pelo usuário antes de instalar |
