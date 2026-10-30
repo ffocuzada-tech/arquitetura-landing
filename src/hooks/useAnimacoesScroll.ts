@@ -30,28 +30,3 @@ export function useTextoSobe(ref: RefObject<HTMLElement | null>) {
     return () => mm.revert();
   }, [ref]);
 }
-
-export function useImagemRecorte(ref: RefObject<HTMLElement | null>) {
-  useEffect(() => {
-    const elemento = ref.current;
-    if (!elemento) return;
-
-    const mm = gsap.matchMedia();
-
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.fromTo(
-        elemento,
-        { clipPath: "inset(18%)", scale: 1.15 },
-        {
-          clipPath: "inset(0%)",
-          scale: 1,
-          duration: 1.1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: elemento, start: "top 80%" },
-        },
-      );
-    });
-
-    return () => mm.revert();
-  }, [ref]);
-}
