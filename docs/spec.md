@@ -109,7 +109,7 @@ Contrastes conferidos (WCAG): Carvão/Névoa 14,9 · Terra/Névoa 6,6 · Madeira
 | Rótulos | IBM Plex Mono, 12px, caixa-alta | igual |
 
 - Espaçamentos em múltiplos de 8px; título → texto: 24px.
-- Cantos: fotos retas; botões e campos 4px; cartões 6px.
+- Cantos: botões e campos 4px; cartões 6px; fotos retas. Exceções (D46–D55): card do Manifesto 28px com foto 16px; cards de Projetos 24px; cards do Por que nós 24px; cartões do Processo 18px.
 - Botão principal: fundo Âmbar, texto Carvão.
 - Mobile-first.
 
@@ -137,41 +137,51 @@ Contrastes conferidos (WCAG): Carvão/Névoa 14,9 · Terra/Névoa 6,6 · Madeira
 
 ### 01 · Manifesto (Névoa)
 
-- **Título:** "O vazio é onde a vida acontece."
+- **Card único:** texto, números e foto dentro de um só card Linho, cantos de 28px, borda Pedra ~28%, sombra suave. O rótulo "01 · Manifesto" fica acima do card, fora dele.
+- **Título:** "O *vazio* é onde a vida acontece." ("vazio" em itálico, eco do logo — D49).
 - **Texto:**
   - "Queríamos transformar nosso lar num lugar de paz: silêncio, luz natural e a mata por perto. Foi desenhando essa casa que entendemos o que mais importa nela, o espaço livre entre as coisas, por onde passam a luz, o ar e a paisagem."
   - "Daí vem o nosso nome. Hoje levamos esse mesmo cuidado para quem tem um pedaço de serra e quer viver nele com conforto e segurança."
-- **Números:** "12 anos" · "projetando na serra" / "38 casas" · "entregues" / "100%" · "das obras acompanhadas por nós".
-- **Layout:** texto à esquerda (6 colunas), foto vertical 4:5 à direita (5 colunas), uma coluna de respiro. Números numa linha própria embaixo, Newsreader 300 grande, separados por linhas finas Pedra. Celular: texto, foto e números empilhados.
+- **Números (dentro do card, abaixo do texto):** "12 anos" · "projetando na serra" / "38 casas" · "entregues" / "100%" · "das obras acompanhadas por nós". Três colunas iguais, separadas do texto por um fio Pedra ~45%; cada número tem um traço Âmbar de 24×2px acima, o valor em Newsreader 300 (40px computador / 32px celular) em Madeira, e a legenda em Terra.
+- **Layout:** computador (≥900px), grade 7/5 — texto à esquerda com padding generoso, foto à direita como uma "janela" (12px de respiro em cima/direita/embaixo, 0 à esquerda), cantos de 16px, altura toda do card (mínimo 560px). Celular: texto e números em cima, foto 4:5 embaixo, com 12px de respiro nas laterais e embaixo.
 - **Foto:** `manifesto-interior.webp`.
-- **Efeitos:** texto sobe; imagem surge de um recorte.
+- **Efeitos (D47, D48 — só com `prefers-reduced-motion: no-preference`):** título sobe (`useTextoSobe`); na entrada, o card sobe 24px, os traços dos números crescem da esquerda e os números contam de 0 até o valor final. Com mouse (`(hover: hover) and (pointer: fine)`), o card inclina na direção do cursor (até ~4°/5°) com um brilho suave acompanhando o ponteiro; celular e reduced motion ficam parados.
 
 ### 02 · Projetos (Linho)
 
 - **Título:** "Casas que já nasceram na serra"
-- **Link no alto:** "Agendar reunião →" (mesma mensagem do cabeçalho).
-- **Projetos:**
+- **Link no alto:** "Agendar reunião →" (mesma mensagem do cabeçalho; no celular, o link fica embaixo dos cards).
+- **Projetos (D50):** três cards iguais, só de foto, proporção 4:4,6 no computador e 4:5 no celular, cantos de 24px, sombra suave, grade de 3 colunas a partir de 760px.
 
-| Nome | Local · área | Foto |
+| Nome | Fechado ("local · área") | Enquadramento |
 |---|---|---|
-| Casa Araucária | Domingos Martins · Pedra Azul · 180 m² | `casa-araucaria.webp` |
-| Casa do Vale | Venda Nova do Imigrante · 140 m² | `casa-do-vale.webp` |
-| Refúgio da Neblina | Marechal Floriano · 95 m² | `refugio-da-neblina.webp` |
+| Casa Araucária | Pedra Azul · 180 m² | `object-position: 42% 50%` |
+| Casa do Vale | Venda Nova do Imigrante · 140 m² | `object-position: 62% 50%` |
+| Refúgio da Neblina | Marechal Floriano · 95 m² | `object-position: 62% 50%` |
 
-- **Layout:** composição de revista. Casa Araucária grande à esquerda (7 colunas); as outras duas empilhadas à direita (5 colunas). Fotos 4:3. Embaixo de cada foto: nome (Newsreader) e "local · área" (IBM Plex Mono). Sem página de detalhe. Celular: os três empilhados, mesmo tamanho.
-- **Efeito:** imagens surgem de um recorte.
+- **Fechado:** degradê Crepúsculo na base da foto; nome (Newsreader 400, 26px, Névoa) e "local · área" (Plex Mono 11px caixa-alta, Névoa 85%) sobre o degradê. Sem ícone de +.
+- **Hover (só com mouse):** o card sobe 6px e a foto vai a `scale(1.05)`.
+- **Abrir/fechar (D51):** o card inteiro é um botão (`aria-expanded`, `aria-controls`, `aria-label` "Ver detalhes de {nome}" / "Fechar detalhes de {nome}"); clique ou toque abre, novo clique fecha, `Esc` fecha o que estiver aberto e devolve o foco ao botão. Cada card abre independente.
+- **Aberto:** um painel Névoa sobe de dentro do card (10px de margem, cantos de 14px), com o nome (Carvão), o parágrafo (Terra) e as etiquetas; a foto escurece de leve e amplia; o nome da base some; aparece um × redondo de 40px (Carvão) no canto superior direito. O painel fica no fluxo do card (nunca aparece barra de rolagem).
+- **Etiquetas:** pílulas Plex Mono 11px caixa-alta; a primeira (área) em Araucária sólido com texto Névoa, as demais com borda Araucária ~35% e texto Araucária.
+- **Textos dos painéis (D52, aprovados):**
+  - **Casa Araucária** — "Dois pavimentos com fachada de vidro do chão ao telhado, de frente para a Pedra Azul. A base de pedra vence o desnível do terreno, e a sala vira mirante nas manhãs de neblina." Etiquetas: `180 m²` · `Domingos Martins · Pedra Azul` · `2 pavimentos`.
+  - **Casa do Vale** — "Térrea e comprida, com varanda corrida na borda do vale. Feita para quem trabalha de casa: luz natural o dia inteiro e vidro duplo para as noites frias." Etiquetas: `140 m²` · `Venda Nova do Imigrante` · `Térrea`.
+  - **Refúgio da Neblina** — "Pequena e num andar só, do jeito que os moradores pediram: madeira escura, varanda para ver a chuva chegar e a horta a poucos passos da porta." Etiquetas: `95 m²` · `Marechal Floriano` · `1 pavimento`.
+- **Fotos:** `casa-araucaria.webp`, `casa-do-vale.webp`, `refugio-da-neblina.webp` (textos alternativos: ver parte 8). Sem página de detalhe.
+- **Reduced motion:** abre e fecha sem animação.
 
 ### 03 · Por que nós (Névoa)
 
 - **Título:** "Uma casa pensada para a serra, não adaptada a ela."
 - **Frase de apoio:** "Para quem já tem o terreno e quer ter certeza de que a casa vai funcionar ali."
 - **Itens:**
-  1. **"Projeto para terreno de serra"** — "Desnível, sol da manhã, vento e neblina entram no desenho desde a primeira visita. A casa se encaixa no terreno, em vez de brigar com ele."
-  2. **"Madeira e vidro, com conforto no frio"** — "Vidro duplo, madeira tratada e isolamento pensados para as noites frias da serra. Muita luz durante o dia, casa quente à noite."
-  3. **"Acompanhamos a obra até as chaves"** — "Visitamos a obra com frequência e tiramos as dúvidas do construtor. O que foi desenhado é o que você recebe."
-- **Layout:** título à esquerda (5 colunas), itens à direita (6 colunas), em linhas separadas por fios Pedra. Sem numeração e sem foto. Celular: itens empilhados, ícone ao lado.
-- **Ícones:** traço fino no desenho do logo, em Araucária: terreno, janela de vidro, moldura com check. Decorativos (escondidos dos leitores de tela).
-- **Efeito:** texto sobe.
+  1. **"Projeto para terreno de serra"** — "Desnível, sol da manhã, vento e neblina entram no desenho desde a primeira visita. A casa se encaixa no terreno, em vez de brigar com ele." Selo Araucária.
+  2. **"Madeira e vidro, com conforto no frio"** — "Vidro duplo, madeira tratada e isolamento pensados para as noites frias da serra. Muita luz durante o dia, casa quente à noite." Selo Madeira.
+  3. **"Acompanhamos a obra até as chaves"** — "Visitamos a obra com frequência e tiramos as dúvidas do construtor. O que foi desenhado é o que você recebe." Selo Carvão.
+- **Layout (D53):** título + frase à esquerda (5 colunas, `sticky` a 120px do topo no computador), itens à direita (6 colunas, a partir da 7ª). Cada item é um card Linho, borda Pedra ~30%, cantos de 24px, com um selo redondo de 56px (cor do item) e o ícone atual (D35) em Névoa dentro dele. Celular: itens empilhados, cards claros com o selo colorido, sem título fixo.
+- **Ícones:** traço fino no desenho do logo (terreno, janela de vidro, moldura com check), em Névoa sobre o selo colorido. Decorativos (escondidos dos leitores de tela).
+- **Efeito (D54):** título e frase sobem (`useTextoSobe`); os cards sobem 20px em sequência na entrada. Com mouse, no hover a cor do selo preenche o card inteiro e o título/texto passam a Névoa; sem hover no celular. Reduced motion: sem animações.
 
 ### 04 · Processo (Linho)
 
@@ -183,8 +193,8 @@ Contrastes conferidos (WCAG): Carvão/Névoa 14,9 · Terra/Névoa 6,6 · Madeira
   3. **"Projeto"** — "Plantas, cortes e detalhes de madeira e vidro, prontos para aprovação na prefeitura."
   4. **"Visualização 3D"** — "Você percorre a casa antes de ela existir e ajusta o que quiser."
   5. **"Obra"** — "Acompanhamos a construção de perto até a entrega das chaves."
-- **Layout:** linha do tempo horizontal. Celular: linha vertical à esquerda.
-- **Efeito:** com a rolagem, a linha Âmbar avança, o ponto da etapa fica Âmbar e o título passa de Terra para Carvão. Etapas apagadas continuam legíveis (Terra, nunca Pedra). No celular, acende de cima para baixo. Sem animação: todas acesas.
+- **Layout (D55):** linha do tempo tracejada em Pedra, com o progresso Âmbar (2px) avançando por cima — horizontal no computador, vertical à esquerda no celular. Cada etapa é um cartão de cantos 18px: apagado tem borda tracejada Pedra; aceso ganha fundo Névoa, borda sólida Madeira ~30%, sombra suave e (no computador) sobe 4px. Número "01" a "05" em Newsreader 300 (44px), Terra → Madeira quando aceso; título Terra → Carvão quando aceso.
+- **Efeito:** com a rolagem, a linha Âmbar avança, o ponto da etapa (círculo de 15px) fica Âmbar e o cartão acende. Etapas apagadas continuam legíveis (Terra, nunca Pedra). No celular, acende de cima para baixo. Sem animação: todas acesas.
 
 ### 05 · Depoimentos (Crepúsculo)
 

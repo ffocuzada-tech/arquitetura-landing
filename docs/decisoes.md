@@ -51,3 +51,15 @@
 | D43 | 30/10/2026 | E-mail com assunto "Novo contato pelo site: {nome}", as respostas e um link para responder pelo WhatsApp; nada guardado no site | Resposta rápida pelo escritório; LGPD (S4) |
 | D44 | 30/10/2026 | Projeto duplicado `arquitetura-landing-f9pt` apagado na Vercel; fica só `arquitetura-landing` | Uma prévia por PR e variáveis de ambiente cadastradas uma vez só |
 | D45 | 30/10/2026 | Texto da política de privacidade aprovado (linguagem simples, LGPD) | Transparência sobre os dados do formulário |
+| D46 | 30/10/2026 | 01 Manifesto: texto, números e foto num card Linho com cantos de 28px; foto dentro como janela, 12px de respiro e cantos de 16px | Unir texto e foto e acabar com o vão embaixo do texto |
+| D47 | 30/10/2026 | 01 Manifesto: card inclina na direção do cursor (até ~4° e 5°), com brilho que acompanha o mouse; celular parado; reduced motion parado | Animação interativa escolhida entre três testadas (Janela e Raio de sol descartadas) |
+| D48 | 30/10/2026 | 01 Manifesto: números dentro do card, 40px em Madeira, com traço Âmbar e contagem na entrada | Números menores e com destaque de cor; Âmbar não serve como texto em fundo claro |
+| D49 | 30/10/2026 | 01 Manifesto: "vazio" em itálico no título | Eco do logo |
+| D50 | 30/10/2026 | 02 Projetos: três cards iguais só de foto, cantos de 24px, 4:4,6 (celular 4:5), nome e "local · área" sobre degradê; substitui a composição 7 + 5 | Fotos maiores, mesmo padrão e sem o vão embaixo da foto grande |
+| D51 | 30/10/2026 | 02 Projetos: card inteiro é botão; abre um painel Névoa com texto e etiquetas, sem barra de rolagem (painel no fluxo); × só aberto; Esc fecha | Cards interativos com informação dentro, acessíveis por teclado e toque |
+| D52 | 30/10/2026 | 02 Projetos: textos novos dos painéis e etiquetas de pavimentos (ver spec) | Cada casa ligada ao depoimento do mesmo cliente |
+| D53 | 30/10/2026 | 03 Por que nós: título fixo à esquerda; diferenciais em cards Linho com cantos de 24px e selo redondo Araucária / Madeira / Carvão | Sair da lista simples mantendo o layout antigo |
+| D54 | 30/10/2026 | 03 Por que nós: no hover a cor do selo preenche o card e o texto fica claro; celular sem hover | Interação discreta; versão sempre colorida descartada por pesar |
+| D55 | 30/10/2026 | 04 Processo: trilho tracejado com progresso Âmbar de 2px; etapas em cartões de 18px (tracejado apagado, sólido aceso); números 01–05 em 44px; texto 15px | Combinar com os cards arredondados e mostrar "projeto → obra" |
+| D56 | 30/10/2026 | 05 Depoimentos e 06 Contato sem mudança nesta melhoria | Escopo aprovado pelo usuário |
+| D57 | 30/10/2026 | Melhoria feita num PR só, branch `fix/layout-secoes-01-a-04`; HTML da prévia em `docs/referencia-layout.html` como referência | Revisar tudo junto na prévia da Vercel |

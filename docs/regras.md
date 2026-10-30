@@ -78,7 +78,7 @@
 ### Componentes
 - Botão principal: fundo Âmbar, texto Carvão, cantos de 4px.
 - Botão do cabeçalho: fundo Carvão.
-- Campos: cantos de 4px, borda Terra. Cartões: 6px. Fotos: sem arredondar.
+- Campos: cantos de 4px, borda Terra. Cartões: 6px. Fotos: sem arredondar. Exceções nas seções 01 a 04: ver spec, parte 5 (D46–D55).
 - Espaçamentos em múltiplos de 8px.
 - Logo: usar os SVGs de `public/images/logo/`; nunca recriar o logo em código ou com fonte.
 - Todo efeito de animação respeita `prefers-reduced-motion` (ver `docs/spec.md`, parte 2).
