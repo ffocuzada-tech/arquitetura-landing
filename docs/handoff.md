@@ -4,22 +4,24 @@
 > Histórico → PRs no GitHub. Decisões → docs/decisoes.md.
 
 ## 1. Onde estamos
-Etapa: PR 4 – Integrações | Status: aguardando revisão
+Etapa: Melhoria – Layout das seções 01 a 04 | Status: aguardando revisão
+Link do PR: https://github.com/ffocuzada-tech/arquitetura-landing/pull/5
 
 ## 2. Última entrega
-PR 4 concluído na branch `etapa/4-integracoes`: envio do formulário por e-mail, política de privacidade e e-mail real no rodapé.
-- **Envio por e-mail** — `src/lib/validacao.ts` concentra as regras do formulário (valores aceitos nas 3 escolhas, nome obrigatório, WhatsApp com 10 ou 11 dígitos), usadas tanto pelo formulário quanto pela rota. `src/lib/email.ts` envia pelo Gmail com `nodemailer` (D41), lendo `GMAIL_USUARIO`, `GMAIL_SENHA_APP` e `EMAIL_DESTINO`; lança erro sem mostrar valores se alguma faltar. `src/app/api/contato/route.ts` (POST) valida no servidor, verifica o campo honeypot (D42) e envia o e-mail com assunto "Novo contato pelo site: {nome}" e um link para responder pelo WhatsApp (D43): sucesso → 200, dados inválidos → 400, falha no envio ou variável ausente → 500. Nada é guardado nem registrado em log (S4). O formulário ganhou o campo honeypot (escondido de quem vê e de leitores de tela, fora da ordem do Tab, autocomplete desligado).
-- **Política de privacidade** — `src/app/politica-de-privacidade/page.tsx` com o texto final aprovado (D45), reaproveitando `Secao` e `Rotulo`; título corrigido para não ficar colado na borda no celular (faltava `Container`) nem atrás do cabeçalho fixo. O e-mail do escritório é um link `mailto`.
-- **Rodapé** — e-mail `estudiovazio.contato@gmail.com` como link `mailto` na coluna Contato; WhatsApp continua reservado.
-- `export const runtime = "nodejs"` não foi usado na rota: o projeto tem Cache Components ativado (`next.config.ts`), que já usa Node.js como runtime padrão e não aceita essa configuração explícita (confirmado em `node_modules/next/dist/docs`).
-- `.env.example` (sem valores) adicionado e liberado no `.gitignore` com `!.env.example`, já que o padrão `.env*` também bloquearia esse arquivo.
+Melhoria de layout concluída na branch `fix/layout-secoes-01-a-04`, a partir da prévia aprovada em `docs/referencia-layout.html`: novo visual para as seções 01 a 04 (textos e paleta mantidos, exceto os textos novos da seção 02). As seções 05, 06, hero, cabeçalho e rodapé não mudaram (D56).
+- **01 Manifesto** — texto, números e foto reunidos num card Linho único (cantos 28px, foto como "janela" com 12px de respiro e cantos 16px). Números maiores (40px, Madeira) com traço Âmbar e contagem na entrada. "vazio" em itálico no título. Com mouse, o card inclina na direção do cursor com um brilho suave (D46–D49); celular e reduced motion ficam parados.
+- **02 Projetos** — três cards iguais só de foto (cantos 24px, 4:4,6/4:5), que abrem um painel Névoa com texto e etiquetas ao clicar, tocar ou usar o teclado (`aria-expanded`, `Esc` fecha e devolve o foco). Painel no fluxo do card, sem barra de rolagem (D50–D52). Textos novos dos painéis, ligados aos depoimentos dos mesmos clientes.
+- **03 Por que nós** — diferenciais em cards Linho com selo redondo colorido (Araucária/Madeira/Carvão); no hover a cor do selo preenche o card (D53, D54).
+- **04 Processo** — trilho tracejado com progresso Âmbar de 2px; etapas em cartões (tracejado apagado, sólido e com sombra quando aceso); números 01–05 em 44px (D55). Lógica do `ScrollTrigger` mantida.
+- Regra nova em `globals.css`: `@media (prefers-reduced-motion: reduce)` zera a duração de toda transição/animação CSS — necessária porque os cards de Projetos e Processo agora usam transições puras em CSS (abrir/fechar, acender), além dos efeitos já tratados via `gsap.matchMedia()`.
+- Durante os testes, um bug real foi encontrado e corrigido: os `id`/`aria-controls` dos painéis de Projetos usavam o nome do projeto direto (ex.: `painel-Casa Araucária`, com espaço e acento). Passou a usar um `slug` sem espaços/acentos (ex.: `painel-casa-araucaria`), mais robusto.
 
 ## 3. Próximo passo
-PR 5 – Ajustes finais e publicação, na branch `etapa/5-ajustes-publicacao`.
+Revisão e merge desta melhoria pelo usuário. Depois, retomar o PR 5 – Ajustes finais e publicação, na branch `etapa/5-ajustes-publicacao`.
 
 ## 4. Pendências abertas
 - Número de WhatsApp do projeto (`src/lib/contato.ts`, `NUMERO_WHATSAPP`, e rodapé).
-- Testar o envio real pelo Gmail do projeto: o `.env.local` não existe neste ambiente, então o envio real não foi testado nesta etapa — só a validação, o honeypot e a resposta de erro (500) por variáveis ausentes. Antes de publicar, cadastrar `GMAIL_USUARIO`, `GMAIL_SENHA_APP` (senha de app, com verificação em duas etapas) e `EMAIL_DESTINO` (local e na Vercel) e testar um envio de ponta a ponta.
+- Testar o envio real pelo Gmail do projeto: cadastrar `GMAIL_USUARIO`, `GMAIL_SENHA_APP` (senha de app, com verificação em duas etapas) e `EMAIL_DESTINO` (local e na Vercel) e enviar um contato de teste de ponta a ponta.
 - Avaliação final da miniatura no teste do site.
 - Teste do pôr do sol em outro lugar do site (fora do escopo até aqui).
 - Vídeo mais leve do hero para celular.
@@ -27,14 +29,15 @@ PR 5 – Ajustes finais e publicação, na branch `etapa/5-ajustes-publicacao`.
 - README com prints de desktop e celular (fica para o PR 5).
 
 ## 5. Atenção
-- Paleta, fontes, layout e textos já estão aprovados: não trocar (ver `docs/regras.md`, Parte 2).
-- A paleta não tem uma cor de erro/alerta dedicada: os avisos de validação do formulário usam Carvão (texto forte), e a mensagem de sucesso usa Araucária — sem introduzir cores novas.
-- Next.js 16: consultar `node_modules/next/dist/docs/` antes de escrever código (ver `AGENTS.md`). O projeto tem Cache Components ativado: não usar `export const runtime` em rotas (ver item 2 acima).
+- Paleta, fontes, layout e textos já estão aprovados: não trocar (ver `docs/regras.md`, Parte 2). As seções 01 a 04 têm exceções de cantos registradas em D46–D55 (ver `docs/spec.md`, parte 5).
+- A paleta não tem cor de erro/alerta nem branco puro: sombras e brilhos usam Carvão/Névoa com transparência, nunca uma cor nova.
+- Next.js 16: consultar `node_modules/next/dist/docs/` antes de escrever código (ver `AGENTS.md`). O projeto tem Cache Components ativado: não usar `export const runtime` em rotas.
 - Skills instaladas como pastas reais em `.claude/skills/` (frontend-design, webapp-testing, ui-ux-pro-max), sem `.agents/`, sem links e sem `skills-lock.json` (D31, D32).
-- Efeitos de scroll usam `gsap.matchMedia()`: o markup/CSS já nasce visível (sem JS ou com reduced motion ativo, nada fica escondido); a animação só esconde e revela quando `prefers-reduced-motion: no-preference`.
+- Efeitos de scroll usam `gsap.matchMedia()`: o markup/CSS já nasce visível; a animação só esconde e revela quando `prefers-reduced-motion: no-preference`. Para transições puras em CSS (hover, abrir/fechar), o `globals.css` agora zera a duração sob reduced motion.
 - O carrossel de depoimentos calcula a largura da trilha por JavaScript (`getBoundingClientRect`) em vez de `calc(50vw - 50%)`: dentro de uma coluna de grid, a porcentagem do CSS resolve contra a largura da coluna, não do container inteiro.
+- IDs/`aria-controls` gerados a partir de conteúdo (nomes de projetos etc.) devem usar um `slug` sem espaços/acentos, não o texto direto.
 - `NUNCA` abrir, ler ou mostrar o conteúdo do `.env.local` (S1): só confirmar se existe.
 - O próximo passo vem sempre do prompt atual; o handoff é só contexto.
 
 ## 6. Verificado em
-30/10/2026 — `npm run lint` e `npm run build` sem erros na `etapa/4-integracoes`. Testes da rota `/api/contato` com o servidor local: dados vazios → 400 com os avisos de cada campo; honeypot preenchido → 200 sem tentar enviar e-mail; dados válidos sem `.env.local` → 500 ("Não foi possível enviar o e-mail."), confirmando que a validação e o honeypot rodam antes do envio. `.env.local` não existe neste ambiente, então o envio real não foi testado (ver pendências). Testado com a skill webapp-testing (Playwright) em 390px e 1440px: política de privacidade legível, com margens corretas e título abaixo do cabeçalho fixo nos dois tamanhos; link `mailto` do rodapé correto; formulário com os avisos exatos quando vazio, mensagem do WhatsApp conferida (combinação "Outro" + "Projeto + Obra" + "mais de 200 m²"), "Prefiro que me liguem" mostrando a mensagem de erro aprovada; campo honeypot fora da tela, com `tabindex="-1"` e `aria-hidden="true"` (confirmado que o Tab pula direto do campo WhatsApp para o botão); sem vazamento lateral e sem erros de console além do 500 esperado no teste do honeypot/envio.
+30/10/2026 — `npm run lint` e `npm run build` sem erros na `fix/layout-secoes-01-a-04`. Testado com a skill webapp-testing (Playwright) em 390px e 1440px, rolando a página inteira: nenhuma rolagem horizontal e nenhum erro de console. 01 Manifesto: card com cantos e foto corretos, números contam na entrada, inclinação com o mouse confirmada pelo `transform` computado (1440px) e card parado com `prefers-reduced-motion: reduce`. 02 Projetos: os três cards abrem e fecham por clique, por teclado (Enter e `Esc`, com o foco voltando ao botão) e por toque; painel conferido em 390px e 1440px sem barra de rolagem (`scrollHeight` igual a `clientHeight` nos três cards) e com o texto aprovado completo; sem animação com reduced motion. 03 Por que nós: hover preenche o card com a cor do selo (cor do título confirmada mudando de Carvão para Névoa em 1440px); em 390px os cards ficam claros, sem hover. 04 Processo: etapas acendem com a rolagem e todas aparecem acesas com reduced motion (como antes, D4/PR2). Seções 05 e 06 conferidas visualmente sem alteração.

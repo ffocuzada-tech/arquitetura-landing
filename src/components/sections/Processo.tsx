@@ -34,6 +34,8 @@ export default function Processo() {
   const linhaBaseRef = useRef<HTMLDivElement>(null);
   const linhaProgressoRef = useRef<HTMLDivElement>(null);
   const pontoRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cartaoRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const numeroRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const etapaTituloRefs = useRef<(HTMLHeadingElement | null)[]>([]);
 
   useTextoSobe(tituloRef);
@@ -45,9 +47,26 @@ export default function Processo() {
 
     function ativar(indice: number, ativo: boolean) {
       const ponto = pontoRefs.current[indice];
+      const cartao = cartaoRefs.current[indice];
+      const numero = numeroRefs.current[indice];
       const titulo = etapaTituloRefs.current[indice];
+
       ponto?.classList.toggle("bg-ambar", ativo);
-      ponto?.classList.toggle("bg-pedra", !ativo);
+      ponto?.classList.toggle("border-ambar", ativo);
+      ponto?.classList.toggle("bg-linho", !ativo);
+      ponto?.classList.toggle("border-pedra", !ativo);
+
+      cartao?.classList.toggle("border-dashed", !ativo);
+      cartao?.classList.toggle("border-pedra", !ativo);
+      cartao?.classList.toggle("border-solid", ativo);
+      cartao?.classList.toggle("border-madeira/30", ativo);
+      cartao?.classList.toggle("bg-nevoa", ativo);
+      cartao?.classList.toggle("shadow-[0_14px_32px_-24px_rgba(33,26,18,.5)]", ativo);
+      cartao?.classList.toggle("min-[900px]:-translate-y-1", ativo);
+
+      numero?.classList.toggle("text-madeira", ativo);
+      numero?.classList.toggle("text-terra", !ativo);
+
       titulo?.classList.toggle("text-carvao", ativo);
       titulo?.classList.toggle("text-terra", !ativo);
     }
@@ -55,7 +74,7 @@ export default function Processo() {
     const mm = gsap.matchMedia();
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.set(linha, { scaleX: 0, scaleY: 0, transformOrigin: "top left" });
+      gsap.set(linha, { scaleX: 0, scaleY: 0 });
       etapas.forEach((_, indice) => ativar(indice, false));
 
       const trigger = ScrollTrigger.create({
@@ -97,35 +116,53 @@ export default function Processo() {
         </p>
       </div>
 
-      <div className="relative mt-16 pl-8 md:mt-24 md:pl-0">
+      <div className="relative mt-16 pl-9 min-[900px]:mt-[88px] min-[900px]:pl-0">
         <div
           ref={linhaBaseRef}
-          className="absolute left-[3px] top-1 bottom-1 w-px bg-pedra/40 md:left-0 md:right-0 md:top-1 md:bottom-auto md:h-px md:w-auto"
+          className="absolute left-[7px] top-0 bottom-0 w-0 border-l border-dashed border-pedra min-[900px]:left-0 min-[900px]:right-0 min-[900px]:top-[7px] min-[900px]:bottom-auto min-[900px]:h-0 min-[900px]:w-auto min-[900px]:border-l-0 min-[900px]:border-t"
         >
-          <div ref={linhaProgressoRef} className="absolute inset-0 bg-ambar" />
+          <div
+            ref={linhaProgressoRef}
+            className="absolute -left-px top-0 h-full w-[2px] origin-top bg-ambar min-[900px]:left-0 min-[900px]:-top-px min-[900px]:h-[2px] min-[900px]:w-full min-[900px]:origin-left"
+          />
         </div>
 
-        <div className="flex flex-col gap-10 md:flex-row md:gap-6">
+        <ol className="grid list-none gap-5 p-0 min-[900px]:grid-cols-5 min-[900px]:gap-4">
           {etapas.map((etapa, indice) => (
-            <div key={etapa.titulo} className="relative flex-1 md:pt-8">
+            <li key={etapa.titulo} className="relative min-w-0">
               <div
                 ref={(el) => {
                   pontoRefs.current[indice] = el;
                 }}
-                className="absolute -left-8 top-1 h-[9px] w-[9px] -translate-y-1/2 rounded-full bg-pedra md:-left-0 md:left-0 md:top-0"
+                className="absolute left-[-36px] top-[18px] h-[15px] w-[15px] rounded-full border border-pedra bg-linho transition-colors duration-[400ms] min-[900px]:left-0 min-[900px]:top-0"
               />
-              <h3
+              <div
                 ref={(el) => {
-                  etapaTituloRefs.current[indice] = el;
+                  cartaoRefs.current[indice] = el;
                 }}
-                className="font-titulo text-lg text-terra"
+                className="grid h-full content-start gap-2.5 rounded-[18px] border border-dashed border-pedra p-5 transition-[background-color,border-color,box-shadow,transform] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] min-[900px]:mt-9 min-[900px]:h-auto min-[900px]:min-h-[230px]"
               >
-                {etapa.titulo}
-              </h3>
-              <p className="mt-2 font-texto text-sm text-terra">{etapa.texto}</p>
-            </div>
+                <span
+                  ref={(el) => {
+                    numeroRefs.current[indice] = el;
+                  }}
+                  className="font-titulo text-[44px] leading-none font-light tabular-nums text-terra transition-colors duration-[400ms]"
+                >
+                  {String(indice + 1).padStart(2, "0")}
+                </span>
+                <h3
+                  ref={(el) => {
+                    etapaTituloRefs.current[indice] = el;
+                  }}
+                  className="font-titulo text-xl font-normal text-terra transition-colors duration-[400ms]"
+                >
+                  {etapa.titulo}
+                </h3>
+                <p className="text-[15px] leading-[1.55] text-terra">{etapa.texto}</p>
+              </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </Secao>
   );
