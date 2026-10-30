@@ -38,4 +38,6 @@
 | D30 | 29/10/2026 | Site sem modo escuro automático | Cada seção tem o fundo definido na identidade aprovada |
 | D31 | 29/10/2026 | Skills como pastas reais só em `.claude/skills/`, sem `.agents/`, sem links e sem `skills-lock.json` | Atalhos não funcionam bem no Git do Windows; as skills são só para o Claude Code |
 | D32 | 29/10/2026 | Das 7 skills instaladas pelo `ui-ux-pro-max-cli`, fica só a `ui-ux-pro-max`; as 6 extras (banner-design, brand, design, design-system, slides, ui-styling) foram removidas | O Claude Code escolhe skills pela descrição; skills de marca e design system poderiam propor mudanças na identidade já aprovada |
-| D33 | 29/10/2026 | Pacote `gsap` instalado (inclui ScrollTrigger e SplitText) para os efeitos do PR 2 | Execução da escolha já registrada em D4; instalação de pacote é mudança estrutural (regra A2), autorizada pelo usuário antes de instalar |
+| D33 | 29/10/2026 | PR 2 feito em um prompt só (seções e efeitos juntos), em vez dos 2 prompts aprovados | Após uma falha de conexão, o Claude Code retomou pelo handoff e executou tudo de uma vez; o resultado foi revisado e aceito |
+| D34 | 29/10/2026 | GSAP só pelo pacote `gsap` (ScrollTrigger e SplitText incluídos); limpeza das animações com `gsap.matchMedia()` e `revert()` no `useEffect`, sem `@gsap/react` | Mesmo resultado com um pacote a menos; o `matchMedia` também cuida do reduced motion |
+| D35 | 29/10/2026 | Ícones do "Por que nós" desenhados em SVG próprio, sem biblioteca | Traço fino no estilo do logo |

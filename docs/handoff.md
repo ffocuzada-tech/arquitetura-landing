@@ -27,6 +27,7 @@ PR 3 – Seções de conversão, na branch `etapa/3-secoes-conversao`: Depoiment
 - Next.js 16: consultar `node_modules/next/dist/docs/` antes de escrever código (ver `AGENTS.md`).
 - Skills instaladas como pastas reais em `.claude/skills/` (frontend-design, webapp-testing, ui-ux-pro-max), sem `.agents/`, sem links e sem `skills-lock.json` (D31, D32).
 - Efeitos de scroll usam `gsap.matchMedia()`: o markup/CSS já nasce visível (sem JS ou com reduced motion ativo, nada fica escondido); a animação só esconde e revela quando `prefers-reduced-motion: no-preference`.
+- O próximo passo vem sempre do prompt atual; o handoff é só contexto.
 
 ## 6. Verificado em
 29/10/2026 — `npm run lint` e `npm run build` sem erros na `etapa/2-secoes-principais`. Testado com a skill webapp-testing em 390px (celular) e 1440px (computador): as 5 seções novas renderizam com os textos finais do spec, sem erros no console ao rolar a página inteira; com `prefers-reduced-motion: reduce` emulado, as 5 etapas do Processo aparecem todas acesas (Âmbar) sem animação.
