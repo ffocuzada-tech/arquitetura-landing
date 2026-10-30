@@ -149,7 +149,7 @@ export default function Projetos() {
   useTextoSobe(tituloRef);
 
   return (
-    <Secao id="projetos" fundo="linho" rotulo="02 · Projetos">
+    <Secao id="projetos" rotulo="02 · Projetos">
       <div className="mt-6 flex flex-wrap items-end justify-between gap-5 gap-x-8">
         <h2
           ref={tituloRef}

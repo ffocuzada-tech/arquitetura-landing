@@ -215,12 +215,12 @@ export default function Contato() {
   }
 
   return (
-    <Secao id="contato" fundo="linho" rotulo="06 · Contato">
+    <Secao id="contato" escuro rotulo="06 · Contato">
       <div className="max-w-xl">
-        <h2 className="font-titulo text-3xl font-light leading-tight text-carvao md:text-5xl">
+        <h2 className="font-titulo text-3xl font-light leading-tight md:text-5xl">
           Conte sobre seu terreno
         </h2>
-        <p className="mt-6 font-texto text-base text-terra md:text-lg">
+        <p className="mt-6 font-texto text-base text-nevoa/75 md:text-lg">
           Três perguntas rápidas. Montamos a mensagem e você fala direto com o escritório pelo
           WhatsApp.
         </p>

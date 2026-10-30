@@ -157,7 +157,7 @@ export default function Depoimentos() {
   }
 
   return (
-    <Secao id="depoimentos" fundo="crepusculo" rotulo="05 · Depoimentos">
+    <Secao id="depoimentos" escuro rotulo="05 · Depoimentos">
       <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
         <div className="md:col-span-4">
           <h2

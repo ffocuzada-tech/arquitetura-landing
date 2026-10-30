@@ -103,7 +103,7 @@ export default function Processo() {
   }, []);
 
   return (
-    <Secao id="processo" fundo="linho" rotulo="04 · Processo">
+    <Secao id="processo" rotulo="04 · Processo">
       <div className="max-w-xl">
         <h2
           ref={tituloRef}

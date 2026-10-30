@@ -111,7 +111,7 @@ export default function PorQueNos() {
   }, []);
 
   return (
-    <Secao id="por-que-nos" fundo="nevoa" rotulo="03 · Por que nós">
+    <Secao id="por-que-nos" rotulo="03 · Por que nós">
       <div className="mt-6 flex flex-col gap-10 min-[900px]:grid min-[900px]:grid-cols-[5fr_1fr_6fr] min-[900px]:items-start min-[900px]:gap-0">
         <div className="min-[900px]:sticky min-[900px]:top-[120px]">
           <h2
