@@ -60,11 +60,15 @@ export default function Rodape() {
           </div>
         </div>
 
-        <div aria-hidden="true" className="overflow-hidden pt-6">
+        <div
+          aria-hidden="true"
+          className="overflow-hidden pt-6"
+          style={{ containerType: "inline-size", paddingRight: "0.08em" }}
+        >
           <p
             ref={marcaRef}
             className="font-titulo leading-[.88] font-light tracking-[-0.035em] whitespace-nowrap text-nevoa"
-            style={{ fontSize: "clamp(64px, 15.5vw, 250px)" }}
+            style={{ fontSize: "clamp(64px, 14.5cqi, 250px)" }}
           >
             Estúdio <em className="font-light text-ambar italic">Vazio</em>
           </p>
