@@ -2,185 +2,543 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Secao from "@/components/ui/Secao";
-import { useTextoSobe } from "@/hooks/useAnimacoesScroll";
+import Rotulo from "@/components/ui/Rotulo";
 import { MENSAGEM_AGENDAR_REUNIAO, linkWhatsapp } from "@/lib/contato";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { vibrar } from "@/lib/vibrar";
 
-type Projeto = {
+type Casa = {
   slug: string;
-  nome: string;
-  localCurto: string;
+  nomePrincipal: string;
+  nomeItalico: string;
+  local: string;
   foto: string;
   alt: string;
-  objectPosition: string;
+  area: string;
   descricao: string;
-  etiquetas: string[];
+  etiquetas: [string, string];
 };
 
-const projetos: Projeto[] = [
+const casas: Casa[] = [
   {
     slug: "casa-araucaria",
-    nome: "Casa Araucária",
-    localCurto: "Pedra Azul · 180 m²",
+    nomePrincipal: "Casa",
+    nomeItalico: "Araucária",
+    local: "Domingos Martins · Pedra Azul",
     foto: "/images/projetos/casa-araucaria.webp",
     alt: "Casa de madeira com fachada de vidro do chão ao telhado e base de pedra, entre araucárias, com a Pedra Azul ao fundo.",
-    objectPosition: "42% 50%",
+    area: "180",
     descricao:
       "Dois pavimentos com fachada de vidro do chão ao telhado, de frente para a Pedra Azul. A base de pedra vence o desnível do terreno, e a sala vira mirante nas manhãs de neblina.",
-    etiquetas: ["180 m²", "Domingos Martins · Pedra Azul", "2 pavimentos"],
+    etiquetas: ["2 pavimentos", "Base de pedra"],
   },
   {
     slug: "casa-do-vale",
-    nome: "Casa do Vale",
-    localCurto: "Venda Nova do Imigrante · 140 m²",
+    nomePrincipal: "Casa do",
+    nomeItalico: "Vale",
+    local: "Venda Nova do Imigrante",
     foto: "/images/projetos/casa-do-vale.webp",
     alt: "Casa térrea e comprida de madeira e vidro, com varanda corrida, na borda de um vale com neblina ao entardecer.",
-    objectPosition: "62% 50%",
+    area: "140",
     descricao:
       "Térrea e comprida, com varanda corrida na borda do vale. Feita para quem trabalha de casa: luz natural o dia inteiro e vidro duplo para as noites frias.",
-    etiquetas: ["140 m²", "Venda Nova do Imigrante", "Térrea"],
+    etiquetas: ["Térrea", "Varanda corrida"],
   },
   {
     slug: "refugio-da-neblina",
-    nome: "Refúgio da Neblina",
-    localCurto: "Marechal Floriano · 95 m²",
+    nomePrincipal: "Refúgio da",
+    nomeItalico: "Neblina",
+    local: "Marechal Floriano",
     foto: "/images/projetos/refugio-da-neblina.webp",
     alt: "Casa pequena de madeira escura com varanda e janelas acesas, ao lado de uma horta, numa clareira com neblina.",
-    objectPosition: "62% 50%",
+    area: "95",
     descricao:
       "Pequena e num andar só, do jeito que os moradores pediram: madeira escura, varanda para ver a chuva chegar e a horta a poucos passos da porta.",
-    etiquetas: ["95 m²", "Marechal Floriano", "1 pavimento"],
+    etiquetas: ["1 pavimento", "Horta"],
   },
 ];
 
-function CardProjeto({ projeto }: { projeto: Projeto }) {
-  const [aberto, setAberto] = useState(false);
-  const botaoRef = useRef<HTMLButtonElement>(null);
+export default function Projetos() {
+  const secaoRef = useRef<HTMLElement>(null);
+  const trilhoRef = useRef<HTMLDivElement>(null);
+  const casasElRef = useRef<HTMLDivElement>(null);
+  const casaRefs = useRef<(HTMLElement | null)[]>([]);
+  const fotoWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const nomeRefs = useRef<(HTMLHeadingElement | null)[]>([]);
+  const segRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const contadorRef = useRef<HTMLSpanElement>(null);
+  const linhaRef = useRef<HTMLSpanElement>(null);
+
+  const semCliqueRef = useRef(false);
+  const ultimoFocoRef = useRef<HTMLElement | null>(null);
+  const movRef = useRef(true);
+  const painelRef = useRef<HTMLDivElement>(null);
+  const folhaXRef = useRef<HTMLButtonElement>(null);
+
+  const [indiceAberto, setIndiceAberto] = useState<number | null>(null);
+  const [montada, setMontada] = useState(false);
+  const [aberta, setAberta] = useState(false);
+
+  function abrirFolha(indice: number) {
+    ultimoFocoRef.current = document.activeElement as HTMLElement | null;
+    setIndiceAberto(indice);
+    setMontada(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => setAberta(true)));
+    document.documentElement.style.overflow = "hidden";
+    vibrar(10);
+  }
+
+  function fecharFolha() {
+    setAberta(false);
+    document.documentElement.style.overflow = "";
+    if (painelRef.current) painelRef.current.style.transform = "";
+    const atraso = movRef.current ? 520 : 0;
+    setTimeout(() => setMontada(false), atraso);
+    ultimoFocoRef.current?.focus({ preventScroll: true });
+  }
 
   useEffect(() => {
-    if (!aberto) return;
+    if (!aberta) return;
+    const tempo = setTimeout(() => folhaXRef.current?.focus({ preventScroll: true }), 60);
+    return () => clearTimeout(tempo);
+  }, [aberta]);
+
+  useEffect(() => {
+    if (!montada) return;
     function aoTeclar(evento: KeyboardEvent) {
-      if (evento.key === "Escape") {
-        setAberto(false);
-        botaoRef.current?.focus();
+      if (evento.key === "Escape") fecharFolha();
+    }
+    document.addEventListener("keydown", aoTeclar);
+    return () => document.removeEventListener("keydown", aoTeclar);
+  }, [montada]);
+
+  useEffect(() => {
+    if (!painelRef.current || !montada) return;
+    const painel = painelRef.current as HTMLDivElement;
+
+    let y0: number | null = null;
+    let dy = 0;
+
+    function aoTocarInicio(e: TouchEvent) {
+      if (painel.scrollTop > 0) {
+        y0 = null;
+        return;
+      }
+      y0 = e.touches[0].clientY;
+      dy = 0;
+    }
+    function aoTocarMover(e: TouchEvent) {
+      if (y0 === null) return;
+      dy = Math.max(0, e.touches[0].clientY - y0);
+      if (dy > 0) {
+        painel.style.transition = "none";
+        painel.style.transform = `translateY(${dy}px)`;
       }
     }
-    window.addEventListener("keydown", aoTeclar);
-    return () => window.removeEventListener("keydown", aoTeclar);
-  }, [aberto]);
+    function aoTocarFim() {
+      if (y0 === null) return;
+      painel.style.transition = "";
+      if (dy > 110) fecharFolha();
+      else painel.style.transform = "";
+      y0 = null;
+    }
 
-  return (
-    <li
-      data-aberto={aberto}
-      className="group relative isolate grid aspect-[4/5] max-w-full cursor-pointer rounded-[24px] bg-crepusculo p-[10px] shadow-[0_24px_48px_-32px_rgba(33,26,18,.55)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] min-[760px]:aspect-[4/4.6] hover:-translate-y-1.5 hover:shadow-[0_34px_60px_-34px_rgba(33,26,18,.6)] data-[aberto=true]:hover:translate-y-0"
-    >
-      <Image
-        src={projeto.foto}
-        alt={projeto.alt}
-        fill
-        style={{ objectPosition: projeto.objectPosition }}
-        className="-z-20 object-cover transition-[transform,filter] duration-[1400ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-105 group-data-[aberto=true]:scale-[1.08] group-data-[aberto=true]:saturate-[.85] group-data-[aberto=true]:brightness-90"
-      />
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 opacity-100 transition-opacity duration-500 group-data-[aberto=true]:opacity-40"
-        style={{
-          backgroundImage:
-            "linear-gradient(180deg, rgba(28,23,36,0) 45%, rgba(28,23,36,.78) 100%)",
-        }}
-      />
+    painel.addEventListener("touchstart", aoTocarInicio, { passive: true });
+    painel.addEventListener("touchmove", aoTocarMover, { passive: true });
+    painel.addEventListener("touchend", aoTocarFim);
+    return () => {
+      painel.removeEventListener("touchstart", aoTocarInicio);
+      painel.removeEventListener("touchmove", aoTocarMover);
+      painel.removeEventListener("touchend", aoTocarFim);
+    };
+  }, [montada]);
 
-      <div className="absolute inset-x-0 bottom-0 grid gap-1 p-[22px] transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.4,0,0.6,1)] group-data-[aberto=true]:translate-y-2.5 group-data-[aberto=true]:opacity-0">
-        <h3 className="font-titulo text-[26px] leading-[1.15] font-normal text-nevoa">
-          {projeto.nome}
-        </h3>
-        <span className="font-rotulo text-[11px] tracking-[.08em] uppercase text-nevoa/85">
-          {projeto.localCurto}
-        </span>
-      </div>
+  useEffect(() => {
+    const secao = secaoRef.current;
+    const trilho = trilhoRef.current;
+    const casasEl = casasElRef.current;
+    if (!secao || !trilho || !casasEl) return;
+    const casasElNaoNulo = casasEl as HTMLDivElement;
 
-      <button
-        ref={botaoRef}
-        type="button"
-        aria-expanded={aberto}
-        aria-controls={`painel-${projeto.slug}`}
-        aria-label={`${aberto ? "Fechar" : "Ver"} detalhes de ${projeto.nome}`}
-        onClick={() => setAberto((valor) => !valor)}
-        className="absolute inset-0 z-[3] cursor-pointer rounded-[24px] border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-ambar"
-      >
-        <span
-          aria-hidden="true"
-          className="absolute top-5 right-5 grid h-10 w-10 scale-[.6] place-items-center rounded-full bg-carvao opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-data-[aberto=true]:scale-100 group-data-[aberto=true]:rotate-45 group-data-[aberto=true]:opacity-100 group-data-[aberto=true]:delay-[250ms]"
-        >
-          <span className="absolute h-[1.5px] w-3.5 rounded-full bg-nevoa" />
-          <span className="absolute h-[1.5px] w-3.5 rotate-90 rounded-full bg-nevoa" />
-        </span>
-      </button>
+    const mm = gsap.matchMedia();
 
-      <div
-        id={`painel-${projeto.slug}`}
-        className="relative z-[2] grid translate-y-[calc(100%+14px)] content-start gap-3.5 self-end rounded-[14px] bg-nevoa p-[22px_22px_20px] opacity-0 transition-[transform,opacity] duration-[450ms] ease-[cubic-bezier(0.4,0,0.6,1)] [grid-area:1/1] group-data-[aberto=true]:translate-y-0 group-data-[aberto=true]:opacity-100 group-data-[aberto=true]:duration-[600ms] group-data-[aberto=true]:ease-[cubic-bezier(0.22,0.61,0.36,1)]"
-      >
-        <h3 className="pr-12 font-titulo text-[26px] leading-[1.15] font-normal text-carvao">
-          {projeto.nome}
-        </h3>
-        <p className="text-[15px] leading-[1.55] text-terra">{projeto.descricao}</p>
-        <ul className="flex flex-wrap gap-1.5">
-          {projeto.etiquetas.map((etiqueta, i) => (
-            <li
-              key={etiqueta}
-              className={
-                i === 0
-                  ? "rounded-full border border-araucaria bg-araucaria px-2.5 py-[5px] font-rotulo text-[11px] tracking-[.06em] uppercase text-nevoa"
-                  : "rounded-full border border-araucaria/35 bg-linho/50 px-2.5 py-[5px] font-rotulo text-[11px] tracking-[.06em] uppercase text-araucaria"
+    mm.add(
+      { todos: "all", desk: "(min-width: 900px)", reduz: "(prefers-reduced-motion: reduce)" },
+      (contexto) => {
+        const { desk, reduz } = contexto.conditions as { desk: boolean; reduz: boolean };
+        const mov = !reduz;
+        const pino = desk && mov;
+        movRef.current = mov;
+
+        if (pino) {
+          const dist = () => trilho.scrollWidth - window.innerWidth;
+          const tw = gsap.to(trilho, {
+            x: () => -dist(),
+            ease: "none",
+            scrollTrigger: {
+              trigger: secao,
+              start: "top top",
+              end: () => "+=" + dist(),
+              pin: true,
+              scrub: 1,
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                if (linhaRef.current) gsap.set(linhaRef.current, { scaleX: self.progress });
+              },
+            },
+          });
+
+          casaRefs.current.forEach((casa, i) => {
+            if (!casa) return;
+            gsap.fromTo(
+              fotoWrapRefs.current[i],
+              { xPercent: -6 },
+              {
+                xPercent: 6,
+                ease: "none",
+                scrollTrigger: { trigger: casa, containerAnimation: tw, start: "left right", end: "right left", scrub: true },
+              },
+            );
+            gsap.from(nomeRefs.current[i], {
+              yPercent: 40,
+              opacity: 0,
+              ease: "power2.out",
+              scrollTrigger: { trigger: casa, containerAnimation: tw, start: "left 85%", end: "left 45%", scrub: true },
+            });
+            ScrollTrigger.create({
+              trigger: casa,
+              containerAnimation: tw,
+              start: "left center",
+              end: "right center",
+              onToggle: (self) => {
+                if (self.isActive && contadorRef.current) {
+                  contadorRef.current.textContent = `0${i + 1} / 03`;
+                }
+              },
+            });
+          });
+        }
+
+        if (!desk) {
+          const segs = segRefs.current;
+          const casasArr = casaRefs.current;
+          let segAtual = 0;
+
+          function atualizarSegmentos() {
+            const max = casasElNaoNulo.scrollWidth - casasElNaoNulo.clientWidth;
+            const p = max > 0 ? (casasElNaoNulo.scrollLeft / max) * (casasArr.length - 1) : 0;
+            segs.forEach((seg, i) => {
+              seg?.style.setProperty("--f", String(Math.max(0, Math.min(1, p + 1 - i))));
+            });
+            const r = Math.round(p);
+            if (r !== segAtual) {
+              segAtual = r;
+              vibrar(6);
+            }
+          }
+          casasElNaoNulo.addEventListener("scroll", atualizarSegmentos, { passive: true });
+          atualizarSegmentos();
+
+          let arrastando: { x: number; s: number; moveu: boolean } | null = null;
+
+          function aoPointerDown(e: PointerEvent) {
+            if (e.pointerType !== "mouse") return;
+            arrastando = { x: e.clientX, s: casasElNaoNulo.scrollLeft, moveu: false };
+            casasElNaoNulo.style.scrollSnapType = "none";
+          }
+          function aoPointerMove(e: PointerEvent) {
+            if (!arrastando) return;
+            const d = e.clientX - arrastando.x;
+            if (Math.abs(d) > 5) arrastando.moveu = true;
+            casasElNaoNulo.scrollLeft = arrastando.s - d;
+          }
+          function aoPointerUp() {
+            if (!arrastando) return;
+            const moveu = arrastando.moveu;
+            arrastando = null;
+            const max = casasElNaoNulo.scrollWidth - casasElNaoNulo.clientWidth;
+            const larguraCard = casasArr[0]?.getBoundingClientRect().width ?? 0;
+
+            if (max - casasElNaoNulo.scrollLeft < larguraCard / 2) {
+              // a menos de meio card do fim: vai direto ao maximo, senao o ultimo card nunca eh alcancado
+              casasElNaoNulo.scrollTo({ left: max, behavior: mov ? "smooth" : "auto" });
+            } else {
+              let alvo: HTMLElement | null = null;
+              let melhor = Infinity;
+              const base = casasElNaoNulo.getBoundingClientRect().left;
+              casasArr.forEach((casa) => {
+                if (!casa) return;
+                const d = Math.abs(casa.getBoundingClientRect().left - base - 20);
+                if (d < melhor) {
+                  melhor = d;
+                  alvo = casa;
+                }
+              });
+              if (alvo) {
+                const alvoEl: HTMLElement = alvo;
+                casasElNaoNulo.scrollTo({
+                  left: Math.min(max, casasElNaoNulo.scrollLeft + alvoEl.getBoundingClientRect().left - base - 20),
+                  behavior: mov ? "smooth" : "auto",
+                });
               }
-            >
-              {etiqueta}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </li>
-  );
-}
+            }
 
-export default function Projetos() {
-  const tituloRef = useRef<HTMLHeadingElement>(null);
-  useTextoSobe(tituloRef);
+            setTimeout(() => {
+              casasElNaoNulo.style.scrollSnapType = "";
+            }, 450);
+            if (moveu) {
+              semCliqueRef.current = true;
+              setTimeout(() => {
+                semCliqueRef.current = false;
+              }, 60);
+            }
+          }
+
+          casasElNaoNulo.addEventListener("pointerdown", aoPointerDown);
+          window.addEventListener("pointermove", aoPointerMove);
+          window.addEventListener("pointerup", aoPointerUp);
+
+          return () => {
+            casasElNaoNulo.removeEventListener("scroll", atualizarSegmentos);
+            casasElNaoNulo.removeEventListener("pointerdown", aoPointerDown);
+            window.removeEventListener("pointermove", aoPointerMove);
+            window.removeEventListener("pointerup", aoPointerUp);
+          };
+        }
+      },
+    );
+
+    return () => mm.revert();
+  }, []);
+
+  const casaAberta = indiceAberto !== null ? casas[indiceAberto] : null;
 
   return (
-    <Secao id="projetos" fundo="linho" rotulo="02 · Projetos">
-      <div className="mt-6 flex flex-wrap items-end justify-between gap-5 gap-x-8">
-        <h2
-          ref={tituloRef}
-          className="max-w-[14ch] font-titulo text-3xl font-light leading-tight text-carvao md:text-5xl"
-        >
-          Casas que já nasceram na serra
-        </h2>
-        <a
-          href={linkWhatsapp(MENSAGEM_AGENDAR_REUNIAO)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden shrink-0 border-b border-current pb-0.5 font-texto text-[15px] font-medium text-madeira hover:text-carvao md:inline"
-        >
-          Agendar reunião →
-        </a>
-      </div>
-
-      <ul className="mt-12 grid list-none gap-5 p-0 min-[760px]:mt-16 min-[760px]:grid-cols-3 min-[760px]:gap-6">
-        {projetos.map((projeto) => (
-          <CardProjeto key={projeto.slug} projeto={projeto} />
-        ))}
-      </ul>
-
-      <a
-        href={linkWhatsapp(MENSAGEM_AGENDAR_REUNIAO)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-10 inline-block font-texto text-sm font-medium text-madeira hover:underline md:hidden"
+    <>
+      <section
+        id="projetos"
+        ref={secaoRef}
+        aria-labelledby="titulo-projetos"
+        className="relative py-[120px] pb-10 [html.movel_&]:pb-12 [html.pino_&]:flex [html.pino_&]:h-[100svh] [html.pino_&]:items-center [html.pino_&]:overflow-hidden [html.pino_&]:py-0"
       >
-        Agendar reunião →
-      </a>
-    </Secao>
+        <div
+          ref={trilhoRef}
+          className="grid gap-[72px] [html.pino_&]:flex [html.pino_&]:w-max [html.pino_&]:items-stretch [html.pino_&]:gap-[5vw] [html.pino_&]:pr-[10vw] [html.pino_&]:will-change-transform"
+        >
+          <div className="grid content-center gap-7 px-5 md:px-12 [html.movel_&]:gap-5 [html.pino_&]:w-[min(36vw,520px)] [html.pino_&]:px-0 [html:not(.pino)_&]:mx-auto [html:not(.pino)_&]:w-full [html:not(.pino)_&]:max-w-[1376px]">
+            <Rotulo className="text-terra">02 · Projetos</Rotulo>
+            <h2
+              id="titulo-projetos"
+              className="font-titulo font-light leading-[.98] tracking-[-0.015em] text-carvao"
+              style={{ fontSize: "clamp(44px, 5.8vw, 96px)" }}
+            >
+              Casas que já nasceram <em className="italic text-madeira">na serra</em>
+            </h2>
+            <a
+              href={linkWhatsapp(MENSAGEM_AGENDAR_REUNIAO)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="justify-self-start border-b border-current pb-0.5 font-texto text-[15px] font-medium text-madeira hover:text-carvao"
+            >
+              Agendar reunião →
+            </a>
+            <span className="hidden items-center gap-3 font-rotulo text-xs uppercase tracking-wide text-terra [html.pino_&]:flex">
+              <i aria-hidden="true" className="block h-px w-12 origin-left bg-terra [animation:dica_2.2s_ease-in-out_infinite]" />
+              Continue rolando
+            </span>
+          </div>
+
+          <div
+            aria-hidden="true"
+            className="hidden gap-1.5 px-5 pb-3.5 [html.movel_&]:mt-5 [html.movel_&]:flex md:px-12"
+          >
+            {casas.map((casa, i) => (
+              <span
+                key={casa.slug}
+                ref={(el) => {
+                  segRefs.current[i] = el;
+                }}
+                style={{ "--f": i === 0 ? 1 : 0 } as React.CSSProperties}
+                className="relative h-0.5 flex-1 overflow-hidden rounded-full bg-[rgba(92,82,68,.2)]"
+              >
+                <span
+                  className="absolute inset-0 origin-left bg-carvao"
+                  style={{ transform: "scaleX(var(--f,0))" }}
+                />
+              </span>
+            ))}
+          </div>
+
+          <div
+            ref={casasElRef}
+            className="grid gap-[72px] [html.movel_&]:flex [html.movel_&]:cursor-grab [html.movel_&]:gap-3 [html.movel_&]:overflow-x-auto [html.movel_&]:overscroll-x-contain [html.movel_&]:[scrollbar-width:none] [html.movel_&]:snap-x [html.movel_&]:snap-mandatory [html.movel_&]:pl-5 [html.movel_&]:[scroll-padding-inline:20px] md:[html.movel_&]:pl-12 [html.pino_&]:contents"
+          >
+            {casas.map((casa, i) => (
+              <article
+                key={casa.slug}
+                ref={(el) => {
+                  casaRefs.current[i] = el;
+                }}
+                className={`grid min-w-0 gap-5 px-5 md:px-12 [html.movel_&]:w-[84%] [html.movel_&]:max-w-none [html.movel_&]:shrink-0 [html.movel_&]:gap-0 [html.movel_&]:px-0 ${
+                  i === casas.length - 1 ? "[html.movel_&]:snap-end" : "[html.movel_&]:snap-start"
+                } [html.pino_&]:mt-[70px] [html.pino_&]:h-[calc(100svh-190px)] [html.pino_&]:w-[min(62vw,1100px)] [html.pino_&]:grid-rows-[1fr_auto] [html.pino_&]:self-center [html.pino_&]:px-0 [html:not(.pino)_&]:mx-auto [html:not(.pino)_&]:w-full [html:not(.pino)_&]:max-w-[1376px]`}
+              >
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-crepusculo min-[600px]:aspect-[4/3] [html.movel_&]:aspect-auto [html.movel_&]:h-[60svh] [html.movel_&]:max-h-[640px] [html.movel_&]:min-h-[420px] [html.movel_&]:transition-transform [html.movel_&]:duration-300 [html.movel_&]:active:scale-[0.98] [html.pino_&]:aspect-auto [html.pino_&]:h-full [html.pino_&]:min-h-0">
+                  <div
+                    ref={(el) => {
+                      fotoWrapRefs.current[i] = el;
+                    }}
+                    className="absolute inset-0 [html.pino_&]:-left-[8%] [html.pino_&]:w-[116%] [html.pino_&]:max-w-none"
+                  >
+                    <Image
+                      src={casa.foto}
+                      alt={casa.alt}
+                      fill
+                      sizes="(min-width: 900px) 62vw, 84vw"
+                      className="object-cover select-none"
+                    />
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0"
+                    style={{ background: "linear-gradient(180deg, rgba(28,23,36,0) 50%, rgba(28,23,36,.62))" }}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!semCliqueRef.current) abrirFolha(i);
+                    }}
+                    aria-label={`Ver detalhes de ${casa.nomePrincipal} ${casa.nomeItalico}`}
+                    className="absolute inset-0 hidden rounded-[24px] border-0 bg-transparent p-0 [html.movel_&]:z-[2] [html.movel_&]:block"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-4 right-4 z-[1] hidden rounded-full bg-nevoa/90 px-3 py-2 font-rotulo text-[11px] uppercase tracking-[.08em] text-carvao backdrop-blur-[6px] [html.movel_&]:block"
+                  >
+                    Toque para ver +
+                  </span>
+
+                  <div className="absolute inset-x-6 bottom-[22px] z-[1] text-nevoa min-[900px]:inset-x-9 min-[900px]:bottom-[30px]">
+                    <h3
+                      ref={(el) => {
+                        nomeRefs.current[i] = el;
+                      }}
+                      className="font-titulo font-light leading-[.95] tracking-[-0.015em]"
+                      style={{ fontSize: "clamp(38px, 5.6vw, 100px)" }}
+                    >
+                      {casa.nomePrincipal} <em className="italic">{casa.nomeItalico}</em>
+                    </h3>
+                    <span className="mt-3 block font-rotulo text-[11px] uppercase tracking-[.1em] text-nevoa/85">
+                      {casa.local}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid gap-3.5 [html.movel_&]:hidden min-[900px]:grid-cols-[auto_1fr] min-[900px]:items-start min-[900px]:gap-x-10 min-[900px]:gap-y-3">
+                  <span className="font-titulo text-[44px] leading-none font-light tabular-nums text-madeira">
+                    {casa.area}
+                    <small className="ml-[0.1em] text-[0.5em]">m²</small>
+                  </span>
+                  <div>
+                    <p className="max-w-[58ch] text-base text-terra">{casa.descricao}</p>
+                    <ul className="mt-2.5 flex list-none flex-wrap gap-1.5 p-0">
+                      {casa.etiquetas.map((etiqueta) => (
+                        <li
+                          key={etiqueta}
+                          className="rounded-full border border-araucaria/35 px-[11px] py-[5px] font-rotulo text-[11px] uppercase tracking-[.06em] text-araucaria"
+                        >
+                          {etiqueta}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            ))}
+            <div aria-hidden="true" className="hidden [html.movel_&]:block [html.movel_&]:w-2 [html.movel_&]:shrink-0 md:[html.movel_&]:w-9" />
+          </div>
+        </div>
+
+        <div className="absolute inset-x-5 bottom-7 hidden items-center gap-5 md:inset-x-12 [html.pino_&]:flex">
+          <span ref={contadorRef} className="font-rotulo text-xs tracking-[.1em] text-carvao tabular-nums">
+            01 / 03
+          </span>
+          <span className="relative h-px flex-1 bg-[rgba(92,82,68,.25)]">
+            <span ref={linhaRef} className="absolute inset-0 origin-left scale-x-0 bg-carvao" />
+          </span>
+          <Rotulo className="text-terra">Pedra Azul → Marechal Floriano</Rotulo>
+        </div>
+      </section>
+
+      <div hidden={!montada} className="fixed inset-0 z-[95]">
+        <div
+          onClick={fecharFolha}
+          className={`absolute inset-0 bg-crepusculo/55 transition-opacity duration-450 ${aberta ? "opacity-100" : "opacity-0"}`}
+        />
+        <div
+          ref={painelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="folha-titulo"
+          className={`absolute inset-x-0 bottom-0 max-h-[92svh] overflow-y-auto overscroll-contain rounded-t-[28px] bg-nevoa pt-[22px] pb-6 text-carvao transition-transform duration-550 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+            aberta ? "translate-y-0" : "translate-y-[105%]"
+          }`}
+        >
+          <div aria-hidden="true" className="mx-auto mb-3.5 h-[5px] w-11 rounded-full bg-[rgba(92,82,68,.3)]" />
+          <button
+            ref={folhaXRef}
+            type="button"
+            onClick={fecharFolha}
+            aria-label="Fechar detalhes"
+            className="absolute top-3.5 right-3.5 grid h-11 w-11 place-items-center rounded-full bg-linho text-carvao"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+            </svg>
+          </button>
+
+          {casaAberta && (
+            <>
+              <div className="mx-3 aspect-[4/3] overflow-hidden rounded-[20px]">
+                <div className="relative h-full w-full">
+                  <Image src={casaAberta.foto} alt={casaAberta.alt} fill className="object-cover" />
+                </div>
+              </div>
+              <div className="grid gap-3 px-5 pt-[22px]">
+                <Rotulo className="text-terra">{casaAberta.local}</Rotulo>
+                <h3 id="folha-titulo" className="font-titulo font-light text-[38px] leading-none tracking-[-0.01em]">
+                  {casaAberta.nomePrincipal} <em className="italic text-madeira">{casaAberta.nomeItalico}</em>
+                </h3>
+                <span className="font-titulo text-[44px] leading-none font-light tabular-nums text-madeira">
+                  {casaAberta.area}
+                  <small className="ml-[0.1em] text-[0.5em]">m²</small>
+                </span>
+                <p className="text-base text-terra">{casaAberta.descricao}</p>
+                <ul className="flex list-none flex-wrap gap-1.5 p-0">
+                  {casaAberta.etiquetas.map((etiqueta) => (
+                    <li
+                      key={etiqueta}
+                      className="rounded-full border border-araucaria/35 px-[11px] py-[5px] font-rotulo text-[11px] uppercase tracking-[.06em] text-araucaria"
+                    >
+                      {etiqueta}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={linkWhatsapp(MENSAGEM_AGENDAR_REUNIAO)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={fecharFolha}
+                  className="mt-2.5 inline-flex items-center justify-center gap-2.5 rounded-full bg-ambar px-6 py-4 font-texto text-sm font-medium text-carvao"
+                >
+                  Agendar reunião <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </>
   );
 }

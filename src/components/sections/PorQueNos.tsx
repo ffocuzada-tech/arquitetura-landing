@@ -1,94 +1,53 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
+import Image from "next/image";
 import Secao from "@/components/ui/Secao";
 import { gsap } from "@/lib/gsap";
-import { useTextoSobe } from "@/hooks/useAnimacoesScroll";
 
-function IconeTerreno() {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      className="h-7 w-7 shrink-0 text-nevoa"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden="true"
-    >
-      <path d="M4 22 L12 12 L17 17 L22 10 L28 22" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4 25 H28" strokeLinecap="round" />
-    </svg>
-  );
-}
+type Cor = "araucaria" | "madeira" | "carvao";
 
-function IconeVidro() {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      className="h-7 w-7 shrink-0 text-nevoa"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden="true"
-    >
-      <rect x="6" y="6" width="20" height="20" />
-      <path d="M16 6 V26 M6 16 H26" />
-    </svg>
-  );
-}
+const coresFundoMovel: Record<Cor, string> = {
+  araucaria: "[html.movel_&]:bg-araucaria",
+  madeira: "[html.movel_&]:bg-madeira",
+  carvao: "[html.movel_&]:bg-carvao",
+};
 
-function IconeMoldura() {
-  return (
-    <svg
-      viewBox="0 0 32 32"
-      className="h-7 w-7 shrink-0 text-nevoa"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      aria-hidden="true"
-    >
-      <rect x="6" y="6" width="20" height="20" />
-      <path d="M11 17 L15 21 L22 12" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-const cores = {
-  araucaria: "bg-araucaria",
-  madeira: "bg-madeira",
-  carvao: "bg-carvao",
-} as const;
-
-const itens: { icone: ReactNode; titulo: string; texto: string; cor: keyof typeof cores }[] = [
+const itens: { tag: string; titulo: string; texto: string; foto: string; cor: Cor }[] = [
   {
-    icone: <IconeTerreno />,
+    tag: "O terreno",
     titulo: "Projeto para terreno de serra",
     texto:
       "Desnível, sol da manhã, vento e neblina entram no desenho desde a primeira visita. A casa se encaixa no terreno, em vez de brigar com ele.",
+    foto: "/images/detalhes/detalhe-pedra.webp",
     cor: "araucaria",
   },
   {
-    icone: <IconeVidro />,
+    tag: "O conforto",
     titulo: "Madeira e vidro, com conforto no frio",
     texto:
       "Vidro duplo, madeira tratada e isolamento pensados para as noites frias da serra. Muita luz durante o dia, casa quente à noite.",
+    foto: "/images/detalhes/detalhe-vidro.webp",
     cor: "madeira",
   },
   {
-    icone: <IconeMoldura />,
+    tag: "A obra",
     titulo: "Acompanhamos a obra até as chaves",
     texto:
       "Visitamos a obra com frequência e tiramos as dúvidas do construtor. O que foi desenhado é o que você recebe.",
+    foto: "/images/detalhes/detalhe-obra.webp",
     cor: "carvao",
   },
 ];
 
 export default function PorQueNos() {
-  const tituloRef = useRef<HTMLHeadingElement>(null);
   const listaRef = useRef<HTMLUListElement>(null);
-  const cardRefs = useRef<(HTMLLIElement | null)[]>([]);
-
-  useTextoSobe(tituloRef);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const h3Refs = useRef<(HTMLHeadingElement | null)[]>([]);
+  const tagRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const pRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const flutuaRef = useRef<HTMLDivElement>(null);
+  const flutuaImgRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   useEffect(() => {
     const lista = listaRef.current;
@@ -96,70 +55,186 @@ export default function PorQueNos() {
 
     const mm = gsap.matchMedia();
 
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.set(cardRefs.current, { y: 20 });
+    mm.add(
+      {
+        todos: "all",
+        desk: "(min-width: 900px)",
+        reduz: "(prefers-reduced-motion: reduce)",
+        fino: "(hover: hover) and (pointer: fine)",
+      },
+      (contexto) => {
+        const { desk, reduz, fino } = contexto.conditions as {
+          desk: boolean;
+          reduz: boolean;
+          fino: boolean;
+        };
+        const mov = !reduz;
+        const pino = desk && mov;
 
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: lista, start: "top 85%" },
-      });
-      tl.to(cardRefs.current, { y: 0, duration: 0.7, ease: "power3.out", stagger: 0.08 });
+        if (mov) {
+          itemRefs.current.forEach((item, i) => {
+            if (!item) return;
+            const st = { trigger: item, start: "top 85%" };
+            gsap.from(h3Refs.current[i], { yPercent: 105, duration: 1, ease: "power4.out", scrollTrigger: st });
+            gsap.from([tagRefs.current[i], pRefs.current[i]], {
+              y: 20,
+              opacity: 0,
+              duration: 0.9,
+              ease: "power3.out",
+              stagger: 0.08,
+              scrollTrigger: st,
+            });
+          });
+        }
 
-      return () => tl.kill();
-    });
+        if (pino && fino) {
+          const flutua = flutuaRef.current;
+          const imgs = flutuaImgRefs.current;
+          if (flutua) {
+            gsap.set(flutua, { xPercent: -50, yPercent: -50, scale: 0.6, autoAlpha: 0 });
+            const xTo = gsap.quickTo(flutua, "x", { duration: 0.7, ease: "power3" });
+            const yTo = gsap.quickTo(flutua, "y", { duration: 0.7, ease: "power3" });
+
+            function mover(e: PointerEvent) {
+              xTo(e.clientX + 40);
+              yTo(e.clientY);
+            }
+            function sair() {
+              gsap.to(flutua, { autoAlpha: 0, scale: 0.6, duration: 0.35, ease: "power2.in" });
+            }
+            lista.addEventListener("pointermove", mover);
+            lista.addEventListener("pointerleave", sair);
+
+            const entradas = itemRefs.current.map((item, i) => {
+              function entrar() {
+                imgs.forEach((img, k) => img?.classList.toggle("opacity-100", k === i));
+                gsap.to(flutua, {
+                  autoAlpha: 1,
+                  scale: 1,
+                  rotate: gsap.utils.random(-5, 5),
+                  duration: 0.5,
+                  ease: "power3.out",
+                });
+              }
+              item?.addEventListener("pointerenter", entrar);
+              return [item, entrar] as const;
+            });
+
+            return () => {
+              lista.removeEventListener("pointermove", mover);
+              lista.removeEventListener("pointerleave", sair);
+              entradas.forEach(([item, entrar]) => item?.removeEventListener("pointerenter", entrar));
+            };
+          }
+        }
+
+        if (!desk && mov) {
+          itemRefs.current.forEach((item, i) => {
+            if (i === itemRefs.current.length - 1 || !item) return;
+            const proximo = itemRefs.current[i + 1];
+            if (!proximo) return;
+            gsap.to(item, {
+              scale: 0.93,
+              filter: "brightness(.86)",
+              ease: "none",
+              scrollTrigger: {
+                trigger: proximo,
+                start: "top 62%",
+                end: `top ${84 + (i + 1) * 18}px`,
+                scrub: true,
+              },
+            });
+          });
+        }
+      },
+    );
 
     return () => mm.revert();
   }, []);
 
   return (
-    <Secao id="por-que-nos" fundo="nevoa" rotulo="03 · Por que nós">
-      <div className="mt-6 flex flex-col gap-10 min-[900px]:grid min-[900px]:grid-cols-[5fr_1fr_6fr] min-[900px]:items-start min-[900px]:gap-0">
-        <div className="min-[900px]:sticky min-[900px]:top-[120px]">
-          <h2
-            ref={tituloRef}
-            className="font-titulo text-3xl font-light leading-tight text-carvao md:text-5xl"
-          >
-            Uma casa pensada para a serra, não adaptada a ela.
-          </h2>
-          <p className="mt-6 max-w-[42ch] font-texto text-base text-terra md:text-lg">
-            Para quem já tem o terreno e quer ter certeza de que a casa vai
-            funcionar ali.
-          </p>
-        </div>
-
-        <ul
-          ref={listaRef}
-          className="flex list-none flex-col gap-4 p-0 min-[900px]:col-start-3"
+    <Secao id="por-que-nos" rotulo="03 · Por que nós">
+      <div className="mt-6 grid gap-6 min-[900px]:grid-cols-[7fr_4fr] min-[900px]:items-end min-[900px]:gap-16">
+        <h2
+          className="font-titulo font-light leading-[1.04] tracking-[-0.01em] text-carvao"
+          style={{ fontSize: "clamp(34px, 4.4vw, 68px)" }}
         >
-          {itens.map((item, i) => (
-            <li
-              key={item.titulo}
-              ref={(el) => {
-                cardRefs.current[i] = el;
-              }}
-              className="group relative isolate grid grid-cols-[auto_1fr] items-start gap-5 overflow-hidden rounded-[24px] border border-pedra/30 bg-linho p-[28px_24px] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] md:gap-6 md:p-[36px_36px_36px_32px] hover:-translate-x-1.5 hover:shadow-[0_24px_48px_-32px_rgba(33,26,18,.5)]"
-            >
+          Uma casa pensada para a serra, <em className="font-light italic text-madeira">não adaptada a ela.</em>
+        </h2>
+        <p className="max-w-[34ch] text-[17px] text-terra">
+          Para quem já tem o terreno e quer ter certeza de que a casa vai funcionar ali.
+        </p>
+      </div>
+
+      <ul ref={listaRef} className="mt-16 list-none p-0 min-[900px]:mt-[72px] [html.movel_&]:mt-10">
+        {itens.map((item, i) => (
+          <li
+            key={item.titulo}
+            ref={(el) => {
+              itemRefs.current[i] = el;
+            }}
+            style={{ "--i": i } as CSSProperties}
+            className={`group grid gap-[18px] border-t border-[rgba(92,82,68,.35)] py-9 min-[900px]:grid-cols-[7fr_4fr] min-[900px]:items-center min-[900px]:gap-16 min-[900px]:py-12 ${
+              i === itens.length - 1 ? "border-b" : ""
+            } [html.movel_&]:sticky [html.movel_&]:top-[calc(84px+calc(var(--i)*18px))] [html.movel_&]:mb-7 [html.movel_&]:rounded-[26px] [html.movel_&]:border-0 [html.movel_&]:p-[22px_22px_26px] [html.movel_&]:shadow-[0_-16px_40px_-24px_rgba(33,26,18,.45)] ${coresFundoMovel[item.cor]}`}
+          >
+            <div>
               <span
-                aria-hidden="true"
-                className={`absolute left-[52px] top-[56px] -z-10 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-[800ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[30] md:left-[60px] md:top-[64px] ${cores[item.cor]}`}
-              />
-              <span
-                className={`grid h-14 w-14 place-items-center rounded-full ${cores[item.cor]}`}
+                ref={(el) => {
+                  tagRefs.current[i] = el;
+                }}
+                className="font-rotulo text-[11px] uppercase tracking-[.1em] text-madeira [html.movel_&]:text-nevoa/75"
               >
-                <span className="transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.12]">
-                  {item.icone}
-                </span>
+                {item.tag}
               </span>
-              <div className="min-w-0 pt-1">
-                <h3 className="font-titulo text-2xl leading-[1.2] font-normal text-carvao transition-colors duration-[400ms] group-hover:text-nevoa md:text-[28px]">
+              <div className="overflow-hidden">
+                <h3
+                  ref={(el) => {
+                    h3Refs.current[i] = el;
+                  }}
+                  className="font-titulo font-light leading-[1.04] tracking-[-0.01em] text-carvao transition-[transform,color] duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] min-[900px]:group-hover:translate-x-7 min-[900px]:group-hover:text-madeira [html.movel_&]:text-[32px] [html.movel_&]:text-nevoa"
+                  style={{ fontSize: "clamp(30px, 3.9vw, 60px)" }}
+                >
                   {item.titulo}
                 </h3>
-                <p className="mt-2.5 max-w-[46ch] font-texto text-base text-terra transition-colors duration-[400ms] group-hover:text-nevoa/88">
-                  {item.texto}
-                </p>
               </div>
-            </li>
-          ))}
-        </ul>
+            </div>
+
+            <div className="order-[-1] aspect-[16/10] overflow-hidden rounded-[18px] min-[900px]:order-none min-[900px]:hidden min-[900px]:aspect-[5/3]">
+              <div className="relative h-full w-full">
+                <Image src={item.foto} alt="" fill className="object-cover" />
+              </div>
+            </div>
+
+            <p
+              ref={(el) => {
+                pRefs.current[i] = el;
+              }}
+              className="max-w-[40ch] text-base text-terra transition-colors duration-500 min-[900px]:group-hover:text-carvao [html.movel_&]:text-nevoa/86"
+            >
+              {item.texto}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div
+        ref={flutuaRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed top-0 left-0 z-40 invisible aspect-[5/3] w-[320px] overflow-hidden rounded-[18px] opacity-0 shadow-[0_30px_60px_-30px_rgba(33,26,18,.6)]"
+      >
+        {itens.map((item, i) => (
+          <Image
+            key={item.titulo}
+            ref={(el) => {
+              flutuaImgRefs.current[i] = el;
+            }}
+            src={item.foto}
+            alt=""
+            fill
+            className="object-cover opacity-0 transition-opacity duration-350"
+          />
+        ))}
       </div>
     </Secao>
   );

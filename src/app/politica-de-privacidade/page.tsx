@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PoliticaDePrivacidade() {
   return (
-    <Secao id="politica-de-privacidade" fundo="nevoa" className="pt-32 md:pt-44">
+    <Secao id="politica-de-privacidade" className="pt-32 md:pt-44">
       <div className="max-w-[680px]">
         <h1 className="font-titulo text-3xl font-light leading-tight text-carvao md:text-5xl">
           Política de privacidade

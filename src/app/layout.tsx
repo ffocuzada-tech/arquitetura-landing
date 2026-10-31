@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Newsreader, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import Cabecalho from "@/components/layout/Cabecalho";
 import Rodape from "@/components/layout/Rodape";
+import Ceu from "@/components/layout/Ceu";
+import ModoHtml from "@/components/layout/ModoHtml";
+import BarraAcao from "@/components/layout/BarraAcao";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -48,9 +51,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${newsreader.variable} ${hankenGrotesk.variable} ${ibmPlexMono.variable}`}
     >
       <body>
+        <ModoHtml />
+        <Ceu />
         <Cabecalho />
         {children}
         <Rodape />
+        <BarraAcao />
       </body>
     </html>
   );

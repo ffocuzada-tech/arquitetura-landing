@@ -3,6 +3,7 @@
 @theme {
   --color-nevoa: #f4eee6;
   --color-linho: #e8ded0;
+  --color-tarde: #ead6bc;
   --color-carvao: #211a12;
   --color-terra: #5c5244;
   --color-madeira: #87582b;
@@ -28,6 +29,37 @@ a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--color-ambar);
   outline-offset: 2px;
+}
+
+/* grão fixo sobre toda a página (D58) */
+.grao {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .13 0 0 0 0 .1 0 0 0 0 .07 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* linha que pulsa em "Role para conhecer" (hero) */
+@keyframes pulso {
+  0% {
+    transform: scaleY(0);
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* passo do formulário de contato entrando da direita (celular) */
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

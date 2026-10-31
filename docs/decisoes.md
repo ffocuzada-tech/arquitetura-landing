@@ -63,3 +63,18 @@
 | D55 | 30/10/2026 | 04 Processo: trilho tracejado com progresso Âmbar de 2px; etapas em cartões de 18px (tracejado apagado, sólido aceso); números 01–05 em 44px; texto 15px | Combinar com os cards arredondados e mostrar "projeto → obra" |
 | D56 | 30/10/2026 | 05 Depoimentos e 06 Contato sem mudança nesta melhoria | Escopo aprovado pelo usuário |
 | D57 | 30/10/2026 | Melhoria feita num PR só, branch `fix/layout-secoes-01-a-04`; HTML da prévia em `docs/referencia-layout.html` como referência | Revisar tudo junto na prévia da Vercel |
+| D58 | 30/10/2026 | Página como percurso "Um dia na serra": céu fixo Névoa → Linho → Tarde `#EAD6BC` → Crepúsculo; sem faixas; névoa, bruma e grão. Substitui o ritmo de fundos alternados | O site estava correto, mas "simples e chucro": seções como caixas empilhadas |
+| D59 | 30/10/2026 | Hero com título grande em máscara, bruma na base, vídeo que aproxima | Abrir o percurso com impacto |
+| D60 | 30/10/2026 | Manifesto com texto que acende e janela que se abre ("o espaço" / "livre"), números sobre a foto. Substitui D46–D49 | Mostrar o conceito do vazio em vez de só escrevê-lo |
+| D61 | 30/10/2026 | Projetos: trilha horizontal travada no computador; carrossel com barras, "Toque para ver +" e folha no celular; último card com snap no fim. Substitui D50–D51 | Casas grandes como protagonistas; celular com gestos nativos |
+| D62 | 30/10/2026 | Por que nós: foto de detalhe que segue o cursor; cartões coloridos empilhados no celular. Substitui D53–D54 | Interação com sentido sem depender de hover no celular |
+| D63 | 30/10/2026 | Processo: a casa se constrói em 5 imagens; tela travada no computador, palco fixo no celular. Substitui D55 | Tornar o processo visível, não só descrito |
+| D64 | 30/10/2026 | Depoimentos: um por vez, com rostos e setas; pilha para arrastar no celular. Substitui D37 | Mais presença para a prova social |
+| D65 | 30/10/2026 | Contato no crepúsculo, cartão de 28px, opções em pílula; formulário em passos no celular, com a lógica mantida | Formulário mais fácil no celular |
+| D66 | 30/10/2026 | Rodapé com "Estúdio Vazio" enorme | Fechamento marcante |
+| D67 | 30/10/2026 | Celular: cabeçalho some ao descer, botão fixo "Agendar reunião", vibração leve | Ação ao alcance do polegar e tela livre |
+| D68 | 30/10/2026 | Botões e opções em pílula; campos 14px; fotos e cartões 18–28px. Substitui a regra 4/6/0 px | Linguagem mais suave e coerente com o percurso |
+| D69 | 30/10/2026 | Imagens novas: detalhes, croqui e maquete (derivados da Casa Araucária), desenhos em SVG | Material para o processo e o "por que nós"; trocar por Gemini depois |
+| D70 | 30/10/2026 | Textos novos (lista no spec) | Necessários para a nova interação |
+| D71 | 30/10/2026 | `gsap.matchMedia()` sempre com condição `all`; testes de celular com toque emulado | Sem ela, as animações não ligavam em celulares de verdade |
+| D72 | 30/10/2026 | Um PR (`etapa/6-dia-na-serra`) em 3 prompts; referência em `docs/referencia-dia-na-serra.html` | Revisar tudo junto na prévia da Vercel |
