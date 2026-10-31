@@ -54,6 +54,14 @@ button:focus-visible {
   }
 }
 
+/* passo do formulário de contato entrando da direita (celular) */
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
