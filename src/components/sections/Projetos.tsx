@@ -256,25 +256,33 @@ export default function Projetos() {
             if (!arrastando) return;
             const moveu = arrastando.moveu;
             arrastando = null;
-            let alvo: HTMLElement | null = null;
-            let melhor = Infinity;
-            const base = casasElNaoNulo.getBoundingClientRect().left;
-            casasArr.forEach((casa) => {
-              if (!casa) return;
-              const d = Math.abs(casa.getBoundingClientRect().left - base - 20);
-              if (d < melhor) {
-                melhor = d;
-                alvo = casa;
-              }
-            });
             const max = casasElNaoNulo.scrollWidth - casasElNaoNulo.clientWidth;
-            if (alvo) {
-              const alvoEl: HTMLElement = alvo;
-              casasElNaoNulo.scrollTo({
-                left: Math.min(max, casasElNaoNulo.scrollLeft + alvoEl.getBoundingClientRect().left - base - 20),
-                behavior: mov ? "smooth" : "auto",
+            const larguraCard = casasArr[0]?.getBoundingClientRect().width ?? 0;
+
+            if (max - casasElNaoNulo.scrollLeft < larguraCard / 2) {
+              // a menos de meio card do fim: vai direto ao maximo, senao o ultimo card nunca eh alcancado
+              casasElNaoNulo.scrollTo({ left: max, behavior: mov ? "smooth" : "auto" });
+            } else {
+              let alvo: HTMLElement | null = null;
+              let melhor = Infinity;
+              const base = casasElNaoNulo.getBoundingClientRect().left;
+              casasArr.forEach((casa) => {
+                if (!casa) return;
+                const d = Math.abs(casa.getBoundingClientRect().left - base - 20);
+                if (d < melhor) {
+                  melhor = d;
+                  alvo = casa;
+                }
               });
+              if (alvo) {
+                const alvoEl: HTMLElement = alvo;
+                casasElNaoNulo.scrollTo({
+                  left: Math.min(max, casasElNaoNulo.scrollLeft + alvoEl.getBoundingClientRect().left - base - 20),
+                  behavior: mov ? "smooth" : "auto",
+                });
+              }
             }
+
             setTimeout(() => {
               casasElNaoNulo.style.scrollSnapType = "";
             }, 450);
