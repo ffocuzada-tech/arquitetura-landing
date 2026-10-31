@@ -329,7 +329,7 @@ export default function Projetos() {
             <Rotulo className="text-terra">02 · Projetos</Rotulo>
             <h2
               id="titulo-projetos"
-              className="leading-[.98] tracking-[-0.015em] text-carvao"
+              className="font-titulo font-light leading-[.98] tracking-[-0.015em] text-carvao"
               style={{ fontSize: "clamp(44px, 5.8vw, 96px)" }}
             >
               Casas que já nasceram <em className="italic text-madeira">na serra</em>
@@ -424,7 +424,7 @@ export default function Projetos() {
                       ref={(el) => {
                         nomeRefs.current[i] = el;
                       }}
-                      className="leading-[.95] tracking-[-0.015em]"
+                      className="font-titulo font-light leading-[.95] tracking-[-0.015em]"
                       style={{ fontSize: "clamp(38px, 5.6vw, 100px)" }}
                     >
                       {casa.nomePrincipal} <em className="italic">{casa.nomeItalico}</em>
@@ -507,7 +507,7 @@ export default function Projetos() {
               </div>
               <div className="grid gap-3 px-5 pt-[22px]">
                 <Rotulo className="text-terra">{casaAberta.local}</Rotulo>
-                <h3 id="folha-titulo" className="text-[38px] leading-none tracking-[-0.01em]">
+                <h3 id="folha-titulo" className="font-titulo font-light text-[38px] leading-none tracking-[-0.01em]">
                   {casaAberta.nomePrincipal} <em className="italic text-madeira">{casaAberta.nomeItalico}</em>
                 </h3>
                 <span className="font-titulo text-[44px] leading-none font-light tabular-nums text-madeira">

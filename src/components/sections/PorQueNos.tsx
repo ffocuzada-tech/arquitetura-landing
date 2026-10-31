@@ -192,7 +192,7 @@ export default function PorQueNos() {
                   ref={(el) => {
                     h3Refs.current[i] = el;
                   }}
-                  className="font-titulo leading-[1.04] tracking-[-0.01em] text-carvao transition-[transform,color] duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] min-[900px]:group-hover:translate-x-7 min-[900px]:group-hover:text-madeira [html.movel_&]:text-[32px] [html.movel_&]:text-nevoa"
+                  className="font-titulo font-light leading-[1.04] tracking-[-0.01em] text-carvao transition-[transform,color] duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] min-[900px]:group-hover:translate-x-7 min-[900px]:group-hover:text-madeira [html.movel_&]:text-[32px] [html.movel_&]:text-nevoa"
                   style={{ fontSize: "clamp(30px, 3.9vw, 60px)" }}
                 >
                   {item.titulo}

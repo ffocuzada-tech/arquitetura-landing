@@ -263,7 +263,7 @@ export default function Contato() {
           <span className="font-rotulo text-xs tracking-wide text-ambar uppercase">06 · Contato</span>
           <h2
             id="titulo-contato"
-            className="mt-5 leading-[.98] tracking-[-0.015em]"
+            className="mt-5 font-titulo font-light leading-[.98] tracking-[-0.015em]"
             style={{ fontSize: "clamp(40px, 5.4vw, 88px)" }}
           >
             Conte sobre seu <em className="font-light text-ambar italic">terreno</em>

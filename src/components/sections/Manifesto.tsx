@@ -173,10 +173,10 @@ export default function Manifesto() {
 
         <div
           ref={numerosRef}
-          className="absolute inset-x-0 bottom-0 grid grid-cols-3 gap-4 px-5 pb-10 md:px-12 md:pb-14"
+          className="absolute inset-x-0 bottom-0 grid grid-cols-3 items-start gap-4 px-5 pb-10 md:px-12 md:pb-14"
         >
           {numeros.map((numero) => (
-            <div key={numero.legenda} className="grid min-w-0 content-end gap-2">
+            <div key={numero.legenda} className="grid min-w-0 content-start gap-2">
               <span aria-hidden="true" className="block h-0.5 w-7 rounded-full bg-ambar" />
               <span
                 className="font-titulo font-light leading-none tabular-nums text-nevoa"

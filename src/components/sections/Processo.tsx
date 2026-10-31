@@ -251,7 +251,7 @@ export default function Processo() {
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="font-normal leading-[1.1] text-carvao" style={{ fontSize: "clamp(26px, 2.6vw, 40px)" }}>
+              <h3 className="font-titulo font-normal leading-[1.1] text-carvao" style={{ fontSize: "clamp(26px, 2.6vw, 40px)" }}>
                 {etapa.titulo}
               </h3>
               <p className="max-w-[34ch] text-base text-terra">{etapa.texto}</p>
