@@ -5,7 +5,7 @@
 
 ## 1. Onde estamos
 Etapa: Redesenho – Um dia na serra | Status: aguardando revisão
-Link do PR: PENDENTE_PREENCHER
+Link do PR: https://github.com/ffocuzada-tech/arquitetura-landing/pull/6
 
 ## 2. Última entrega
 Redesenho completo do site na branch `etapa/6-dia-na-serra`, feito em 3 prompts a partir da prévia aprovada em `docs/referencia-dia-na-serra.html` (D58–D72). A página deixou de ser uma pilha de seções com fundos alternados e virou um percurso: um céu fixo atrás de tudo muda de cor com a rolagem (Névoa → Linho → Tarde → Crepúsculo), com bruma e grão. Textos aprovados mantidos, com os textos novos da D70 (etiquetas, chips, "o espaço"/"livre").
