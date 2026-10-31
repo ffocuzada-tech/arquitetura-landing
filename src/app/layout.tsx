@@ -4,6 +4,7 @@ import Cabecalho from "@/components/layout/Cabecalho";
 import Rodape from "@/components/layout/Rodape";
 import Ceu from "@/components/layout/Ceu";
 import ModoHtml from "@/components/layout/ModoHtml";
+import BarraAcao from "@/components/layout/BarraAcao";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Cabecalho />
         {children}
         <Rodape />
+        <BarraAcao />
       </body>
     </html>
   );
