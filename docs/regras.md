@@ -69,24 +69,28 @@
 ## Parte 2 — Regras específicas deste site
 
 ### Identidade visual
-- **Paleta:** Névoa `#F4EEE6` · Linho `#E8DED0` · Carvão `#211A12` · Terra `#5C5244` · Madeira `#87582B` · Araucária `#3E4A32` · Pedra `#9A9493` · Âmbar `#F0AA60` (hover `#E0954A`) · Crepúsculo `#1C1724`. Papéis de cada cor: `docs/spec.md`, parte 4.
+- **Paleta:** Névoa `#F4EEE6` · Linho `#E8DED0` · Carvão `#211A12` · Terra `#5C5244` · Madeira `#87582B` · Araucária `#3E4A32` · Pedra `#9A9493` · Âmbar `#F0AA60` (hover `#E0954A`) · Tarde `#EAD6BC` · Crepúsculo `#1C1724`. Papéis de cada cor: `docs/spec.md`, parte 4.
 - **Cores definidas uma única vez** (tokens do Tailwind/CSS) e usadas pelo nome. Nada de códigos de cor soltos nos componentes.
 - **Pedra nunca é cor de texto** (contraste 2,6): só linhas decorativas.
 - **Fontes:** Newsreader (títulos e marca) · Hanken Grotesk (textos) · IBM Plex Mono (rótulos). Só via `next/font/google`.
-- **Estilo:** calmo, muito respiro, fotos grandes e retas, ritmo de fundos Névoa/Linho com uma faixa Crepúsculo.
+- **Estilo:** calmo, muito respiro, fotos grandes; a página é um percurso com um céu fixo que muda de cor, não mais fundos alternados por seção (D58).
 
 ### Componentes
-- Botão principal: fundo Âmbar, texto Carvão, cantos de 4px.
-- Botão do cabeçalho: fundo Carvão.
-- Campos: cantos de 4px, borda Terra. Cartões: 6px. Fotos: sem arredondar. Exceções nas seções 01 a 04: ver spec, parte 5 (D46–D55).
+- **Cantos (D68):** botões e opções do formulário em pílula; campos de formulário 14px; fotos e cartões de 18 a 28px, conforme a seção — ver spec, parte 5 e parte 6. Substitui a regra antiga de 4px/6px/foto reta.
+- Botão principal: fundo Âmbar, texto Carvão, em pílula.
+- Botão do cabeçalho: fundo Carvão sobre o hero e ao rolar; Âmbar quando o cabeçalho está no estado escuro (Depoimentos em diante).
 - Espaçamentos em múltiplos de 8px.
 - Logo: usar os SVGs de `public/images/logo/`; nunca recriar o logo em código ou com fonte.
-- Todo efeito de animação respeita `prefers-reduced-motion` (ver `docs/spec.md`, parte 2).
+- Todo efeito de animação respeita `prefers-reduced-motion` (ver `docs/spec.md`, parte 5).
 - Textos entre aspas no `docs/spec.md` são finais: copiar exatamente.
+- **Animações (D71):** todo `gsap.matchMedia()` usa um objeto de condições que inclui sempre `todos: "all"`. Sem essa condição verdadeira, o código de animação não roda em navegadores que não batem com nenhuma das outras condições — é assim que as animações deixam de ligar em celulares de verdade. Teste sempre com o perfil de dispositivo do navegador e toque emulado, nunca só redimensionando a janela.
 
 ### Estrutura de pastas (exceções à estrutura padrão)
 - `public/videos/` — vídeo do hero.
 - `public/images/depoimentos/` — retratos dos clientes.
+- `public/images/detalhes/` — fotos de detalhe (Por que nós).
+- `public/images/processo/` — fotos das etapas do Processo.
+- `src/components/ui/desenhos/` — desenhos SVG (Processo).
 
 ### Pode alterar
 - Detalhes de implementação que não mudam o resultado visual (organização interna dos componentes, nomes de funções).
